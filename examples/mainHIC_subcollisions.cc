@@ -3,16 +3,6 @@
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
 
-// This test program will generate Pb-Pb collisions at
-// sqrt(S_NN)=2.76TeV using the Angantyr model for Heavy Ion
-// collisions. The analysis will divide the event in centrality
-// classes using the same observable as was used for p-Pb in the ATLAS
-// analysis in arXiv:1508.00848 [hep-ex] (see main112.cc). The
-// centrality classes are same as in the ALICE analysis in
-// arXiv:1012.1657 [nucl-ex] although the actual observable used is
-// not the same. Histograms of multiplicity distributions are measured
-// for each centrality percentile.
-
 // Note that heavy ion collisions are computationally quite CPU
 // intensive and generating a single event will take around a second
 // on a reasonable desktop. To get reasonable statistics, this program
@@ -114,9 +104,9 @@ int main(int argc, char *argv[])
 		{
 			Particle & p = pythia.event[i];
 			int p_status = abs( p.status() );
-			int p_id = abs( p.id() );
-			if ( p_status == 21 or p_status == 31 or p_status == 23 or p_status == 33
-					or p_id == 21 or p_id == 31 or p_id == 23 or p_id == 33 )
+			//int p_id = abs( p.id() );
+			if ( p_status == 21 /*or p_status == 31 or p_status == 23 or p_status == 33*/
+					/*or p_id == 21 or p_id == 31 or p_id == 23 or p_id == 33*/ )
 			{
 		 			out << iEvent << "   " << i
 		 				<< "   " << p.id()

@@ -917,7 +917,7 @@ bool Pythia::init() {
   // Set headers to distinguish the two event listing kinds.
   int startColTag = settings.mode("Event:startColTag");
   process.init("(hard process)", &particleData, startColTag);
-  event.init("(complete event)", &particleData, startColTag);
+  event.init("(complete event printed from init() function)", &particleData, startColTag);
 
   // Final setup stage of particle data, notably resonance widths.
   particleData.initWidths( resonancePtrs);

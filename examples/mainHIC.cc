@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 	// Turn on tracking of space-time information
 	pythia.readString("Fragmentation:setVertices = on");
-	//pythia.readString("PartonVertex:setVertex = on");
+	pythia.readString("PartonVertex:setVertex = on");
 
 	if (argc != 6)
 	{
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
 	//string path = "./results/";
 	//string path = "/scratch/blixen/plumberg/results/";
-	string path = string(argv[5]) + "/";
+	string path = string(argv[5]);
 	ostringstream filename_stream, mult_fn_stream;
 	filename_stream //<< path
 					<< systemSpecs
@@ -121,10 +121,6 @@ int main(int argc, char *argv[])
 					<< systemSpecs << "_mult"
 					<< ".dat";
 	ofstream outMultiplicities( (path + mult_fn_stream.str()).c_str());
-
-	//cerr << "Pythia(): printing to "
-	//		<< path + systemSpecs + "_S_x_p_filenames.dat"
-	//		<< " and " << path + systemSpecs + "_total_N_filename.dat" << endl;
 
 	ofstream outfilenames(path + systemSpecs + "_S_x_p_filenames.dat");
 	outfilenames << filename_stream.str() << endl;

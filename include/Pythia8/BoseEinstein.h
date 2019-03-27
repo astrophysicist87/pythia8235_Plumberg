@@ -1,4 +1,4 @@
-// Bose-Einstein.h is a part of the PYTHIA event generator.
+// BoseEinstein.h is a part of the PYTHIA event generator.
 // Copyright (C) 2018 Torbjorn Sjostrand.
 // PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
 // Please respect the MCnet Guidelines, see GUIDELINES for details.
@@ -27,14 +27,14 @@ class BoseEinsteinHadron {
 public:
 
   // Constructors.
-  BoseEinsteinHadron() : id(0), iPos(0), p(0.), pShift(0.), pComp(0.),
+  BoseEinsteinHadron() : id(0), iPos(0), p(0.), pShift(0.), pComp(0.), x(0.),
     m2(0.) {}
-  BoseEinsteinHadron(int idIn,  int iPosIn, Vec4 pIn, double mIn) :
-    id(idIn), iPos(iPosIn), p(pIn), pShift(0.), pComp(0.) {m2 = mIn*mIn;}
+  BoseEinsteinHadron(int idIn,  int iPosIn, Vec4 pIn, double mIn, Vec4 xIn) :
+    id(idIn), iPos(iPosIn), p(pIn), pShift(0.), pComp(0.), x(xIn) {m2 = mIn*mIn;}
 
   // Information on hadron - all public.
   int    id, iPos;
-  Vec4   p, pShift, pComp;
+  Vec4   p, pShift, pComp, x;
   double m2;
 
 };

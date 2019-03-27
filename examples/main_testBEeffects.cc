@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
 	// turn on and set Bose-Einstein effects
 	pythia.readString("HadronLevel:BoseEinstein = on");
-	pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
+	//pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);

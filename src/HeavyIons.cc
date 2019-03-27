@@ -962,6 +962,7 @@ EventInfo & Angantyr::shiftEvent(EventInfo & ei) {
     Vec4 shift = bmin + (bmax - bmin)*(ei.event[i].y() - ymin)/(ymax - ymin);
     ei.event[i].xProd(ei.event[i].xProd() + shift.px());
     ei.event[i].yProd(ei.event[i].yProd() + shift.py());
+std::cout << "transverse position: " << ei.event[i].xProd() << "   " << ei.event[i].yProd() << std::endl;
   }
   return ei;
 }

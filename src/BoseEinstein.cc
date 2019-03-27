@@ -52,14 +52,6 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
-  QRef     = settings.parm("BoseEinstein:QRef");
-
-  // Multiples and inverses (= "radii") of distance parameters in Q-space.
-  QRef2    = 2. * QRef;
-  QRef3    = 3. * QRef;
-  R2Ref    = 1. / (QRef * QRef);
-  R2Ref2   = 1. / (QRef2 * QRef2);
-  R2Ref3   = 1. / (QRef3 * QRef3);
 
   // Masses of particles with Bose-Einstein implemented.
   for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -72,41 +64,8 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   mPair[3] = 2. * mHadron[8];
 
   // Loop over the four required tables. Local variables.
-  double Qnow, Q2now, centerCorr;
-  for (int iTab = 0; iTab < 4; ++iTab) {
+  for (int iTab = 0; iTab < 4; ++iTab)
     m2Pair[iTab]      = mPair[iTab] * mPair[iTab];
-
-    // Step size and number of steps in normal table.
-    deltaQ[iTab]      = STEPSIZE * min(mPair[iTab], QRef);
-    nStep[iTab]       = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
-    maxQ[iTab]        = (nStep[iTab] - 0.1) * deltaQ[iTab];
-    centerCorr        = deltaQ[iTab] * deltaQ[iTab] / 12.;
-
-    // Construct normal table recursively in Q space.
-    shift[iTab][0]    = 0.;
-    for (int i = 1; i <= nStep[iTab]; ++i) {
-      Qnow            = deltaQ[iTab] * (i - 0.5);
-      Q2now           = Qnow * Qnow;
-      shift[iTab][i]  = shift[iTab][i - 1] + exp(-Q2now * R2Ref)
-        * deltaQ[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
-    }
-
-    // Step size and number of steps in compensation table.
-    deltaQ3[iTab]     = STEPSIZE * min(mPair[iTab], QRef3);
-    nStep3[iTab]      = min( 199, 1 + int(9. * QRef / deltaQ3[iTab]) );
-    maxQ3[iTab]       = (nStep3[iTab] - 0.1) * deltaQ3[iTab];
-    centerCorr        = deltaQ3[iTab] * deltaQ3[iTab] / 12.;
-
-    // Construct compensation table recursively in Q space.
-    shift3[iTab][0]   = 0.;
-    for (int i = 1; i <= nStep3[iTab]; ++i) {
-      Qnow            = deltaQ3[iTab] * (i - 0.5);
-      Q2now           = Qnow * Qnow;
-      shift3[iTab][i] = shift3[iTab][i - 1] + exp(-Q2now * R2Ref3)
-        * deltaQ3[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
-    }
-
-  }
 
   // Done.
   return true;
@@ -138,7 +97,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
     for (int i = 0; i < event.size(); ++i)
       if ( event[i].id() == idNow && event[i].isFinal() )
         hadronBE.push_back(
-          BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m() ) );
+          BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
     nStored[iSpecies + 1] = hadronBE.size();
 
     // Loop through pairs of identical particles and find shifts.
@@ -205,6 +164,60 @@ bool BoseEinstein::shiftEvent( Event& event) {
 // Calculate shift and (unnormalized) compensation for pair.
 
 void BoseEinstein::shiftPair( int i1, int i2, int iTab) {
+
+	//======================================
+	// Start of modified initializations
+  // Set width of BE enhancement using pair's coordinate separation.
+  Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+
+  // Coordinate separation in GeV^{-1}.
+  xDiff *= MM2FM / HBARC;
+
+  // Check that QRef will not be too large or too small: 0.05 <= QRef <= 1.0
+  if ( abs( xDiff.mCalc() ) < 1.0 or abs( xDiff.mCalc() ) > 20.0 ) return;
+
+  // Set relevant scales.
+  R2Ref   = abs( xDiff * xDiff );
+  QRef     = 1 / sqrt(R2Ref);
+  QRef2    = 2. * QRef;
+  QRef3    = 3. * QRef;
+  R2Ref2   = R2Ref / 4.0;
+  R2Ref3   = R2Ref / 9.0;
+
+  // Set various tables on a per-pair basis.
+  double Qnow, Q2now, centerCorr;
+    // Step size and number of steps in normal table.
+    deltaQ[iTab]      = STEPSIZE * min(mPair[iTab], QRef);
+    nStep[iTab]       = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
+    maxQ[iTab]        = (nStep[iTab] - 0.1) * deltaQ[iTab];
+    centerCorr        = deltaQ[iTab] * deltaQ[iTab] / 12.;
+
+    // Construct normal table recursively in Q space.
+    shift[iTab][0]    = 0.;
+    for (int i = 1; i <= nStep[iTab]; ++i) {
+      Qnow            = deltaQ[iTab] * (i - 0.5);
+      Q2now           = Qnow * Qnow;
+      shift[iTab][i]  = shift[iTab][i - 1] + exp(-Q2now * R2Ref)
+        * deltaQ[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
+    }
+
+    // Step size and number of steps in compensation table.
+    deltaQ3[iTab]     = STEPSIZE * min(mPair[iTab], QRef3);
+    nStep3[iTab]      = min( 199, 1 + int(9. * QRef / deltaQ3[iTab]) );
+    maxQ3[iTab]       = (nStep3[iTab] - 0.1) * deltaQ3[iTab];
+    centerCorr        = deltaQ3[iTab] * deltaQ3[iTab] / 12.;
+
+    // Construct compensation table recursively in Q space.
+    shift3[iTab][0]   = 0.;
+    for (int i = 1; i <= nStep3[iTab]; ++i) {
+      Qnow            = deltaQ3[iTab] * (i - 0.5);
+      Q2now           = Qnow * Qnow;
+      shift3[iTab][i] = shift3[iTab][i - 1] + exp(-Q2now * R2Ref3)
+        * deltaQ3[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
+    }
+	// End of modified initializations
+	//======================================
+
 
   // Calculate old relative momentum.
   double Q2old = m2(hadronBE[i1].p, hadronBE[i2].p) - m2Pair[iTab];

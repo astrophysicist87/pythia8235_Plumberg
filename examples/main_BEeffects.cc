@@ -53,21 +53,21 @@ int main(int argc, char *argv[])
 		  };
 
 	// Turn on tracking of space-time information
-	//pythia.readString("Fragmentation:setVertices = on");
+	pythia.readString("Fragmentation:setVertices = on");
 	//pythia.readString("PartonVertex:setVertex = on");
 
-	if (argc != 9)
+	if (argc != 8)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
 		cerr << "Usage: ./main_BEeffects [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
-				<< " [Number of events] [Results directory] [QRef]"
+				<< " [Number of events] [Results directory]"
 				<< " [Lower centrality %] [Upper centrality %]" << endl;
 		exit(8);
 	}
 
 	// turn on and set Bose-Einstein effects
 	pythia.readString("HadronLevel:BoseEinstein = on");
-	pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
+	//pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
 
 	// Estimate centrality class limits
 	const int n_events_to_use = 10000;
-	const double centrality_class_lower_limit = atof( argv[7] );
-	const double centrality_class_upper_limit = atof( argv[8] );
+	const double centrality_class_lower_limit = atof( argv[6] );
+	const double centrality_class_upper_limit = atof( argv[7] );
 
 	cout << "Read in these centrality limits: "
 			<< centrality_class_lower_limit << " to "
