@@ -1,5 +1,5 @@
 # PYTHIA configuration file.
-# Generated on Mon Mar 25 10:11:24 CET 2019 with the user supplied options:
+# Generated on Fri Mar 29 11:04:36 CET 2019 with the user supplied options:
 
 # Install directory prefixes.
 PREFIX_BIN=/home/blixen/plumberg/pythia8235_MYCOPY/bin

@@ -17,6 +17,7 @@ namespace Pythia8 {
 
 // Find relevant settings.
 
+
 void PartonVertex::init() {
 
     doVertex      = settingsPtr->flag("PartonVertex:setVertex");
@@ -26,6 +27,8 @@ void PartonVertex::init() {
     widthEmission = settingsPtr->parm("PartonVertex:EmissionWidth");
     bScale        = 2.187 / (2. * rProton);
 
+	//unit_conversion_factor = 1.0;
+	unit_conversion_factor = FM2MM;
 }
 
 //--------------------------------------------------------------------------
@@ -34,9 +37,9 @@ void PartonVertex::init() {
 
 void PartonVertex::vertexBeam( int iNow, int iBeam, Event& event) {
   if(iBeam == 0)
-    event[iNow].vProd(-bNow/2., 0., 0., 0.);
+    event[iNow].vProd(-0.5*bNow*unit_conversion_factor, 0., 0., 0.);
   else if(iBeam == 1)
-    event[iNow].vProd(bNow/2., 0. ,0. ,0.);
+    event[iNow].vProd(0.5*bNow*unit_conversion_factor, 0. ,0. ,0.);
   else
     infoPtr->errorMsg("Error in PartonVertex:vertexBeam: Wrong beam index.");
 }
@@ -82,7 +85,11 @@ void PartonVertex::vertexMPI( int iBeg, int nAdd, double bNowIn,
     }
 
     // Set production vertices.
-    event[iNow].vProd( x, y, 0., 0.);
+std::cout << "PartonVertex::vertexMPI(): "
+			<< x << "   " << y << "   " << rProton << std::endl;
+    //event[iNow].vProd( x, y, 0., 0.);
+    event[iNow].vProd( x * unit_conversion_factor, y * unit_conversion_factor, 0., 0.);
+
   }
 
 }
@@ -106,7 +113,11 @@ void PartonVertex::vertexFSR( int iNow, Event& event) {
   double pT = max( event[iNow].pT(), pTmin);
   pair<double, double> xy = rndmPtr->gauss2();
   Vec4 vSmear = (widthEmission / pT) * Vec4( xy.first, xy.second, 0., 0.);
-  event[iNow].vProd( vStart + vSmear);
+std::cout << "PartonVertex::vertexFSR(): "
+			<< vStart << "   " << widthEmission << "   "
+			<< pT << "   " << vSmear << std::endl;
+  //event[iNow].vProd( vStart + vSmear);
+  event[iNow].vProd( ( vStart + vSmear ) * unit_conversion_factor );
 
 
 }
@@ -130,7 +141,12 @@ void PartonVertex::vertexISR( int iNow, Event& event) {
   double pT = max( event[iNow].pT(), pTmin);
   pair<double, double> xy = rndmPtr->gauss2();
   Vec4 vSmear = (widthEmission / pT) * Vec4( xy.first, xy.second, 0., 0.);
-  event[iNow].vProd( vStart + vSmear);
+std::cout << "PartonVertex::vertexISR(): "
+			<< rProton << "   " 
+			<< vStart << "   " << widthEmission << "   "
+			<< pT << "   " << vSmear << std::endl;
+  //event[iNow].vProd( vStart + vSmear);
+  event[iNow].vProd( ( vStart + vSmear ) * unit_conversion_factor );
 
 }
 

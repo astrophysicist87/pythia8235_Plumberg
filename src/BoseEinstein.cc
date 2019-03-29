@@ -67,6 +67,9 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   for (int iTab = 0; iTab < 4; ++iTab)
     m2Pair[iTab]      = mPair[iTab] * mPair[iTab];
 
+  number_of_pairs = 0;
+  number_of_shifted_pairs = 0;
+
   // Done.
   return true;
 
@@ -154,6 +157,9 @@ bool BoseEinstein::shiftEvent( Event& event) {
     event[ iNew ].p( hadronBE[i].p );
   }
 
+  cout << "BoseEinstein(): numbers of pairs and shifted pairs = "
+		<< number_of_pairs << "   " << number_of_shifted_pairs << endl;
+
   // Done.
   return true;
 
@@ -173,8 +179,12 @@ void BoseEinstein::shiftPair( int i1, int i2, int iTab) {
   // Coordinate separation in GeV^{-1}.
   xDiff *= MM2FM / HBARC;
 
+  number_of_pairs++;
+
   // Check that QRef will not be too large or too small: 0.05 <= QRef <= 1.0
   if ( abs( xDiff.mCalc() ) < 1.0 or abs( xDiff.mCalc() ) > 20.0 ) return;
+
+  number_of_shifted_pairs++;
 
   // Set relevant scales.
   R2Ref   = abs( xDiff * xDiff );

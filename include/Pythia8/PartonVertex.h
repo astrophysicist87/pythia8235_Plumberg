@@ -68,6 +68,8 @@ private:
   int    modeVertex;
   double rProton, pTmin, widthEmission, bScale;
 
+  double unit_conversion_factor;
+
   // Current values.
   double bNow, xMax, yMax, mux;
 

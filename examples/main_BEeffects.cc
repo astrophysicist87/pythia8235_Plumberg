@@ -31,6 +31,15 @@ void print_particle_record(
 
 int main(int argc, char *argv[])
 {
+	// Check number of command-line arguments.
+	if (argc != 8)
+	{
+		cerr << "Incorrect number of arguments!" << endl;
+		cerr << "Usage: ./main_BEeffects [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
+				<< " [Number of events] [Results directory]"
+				<< " [Lower centrality %] [Upper centrality %]" << endl;
+		exit(8);
+	}
 
 	Pythia pythia;
 
@@ -56,18 +65,10 @@ int main(int argc, char *argv[])
 	pythia.readString("Fragmentation:setVertices = on");
 	//pythia.readString("PartonVertex:setVertex = on");
 
-	if (argc != 8)
-	{
-		cerr << "Incorrect number of arguments!" << endl;
-		cerr << "Usage: ./main_BEeffects [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
-				<< " [Number of events] [Results directory]"
-				<< " [Lower centrality %] [Upper centrality %]" << endl;
-		exit(8);
-	}
-
 	// turn on and set Bose-Einstein effects
 	pythia.readString("HadronLevel:BoseEinstein = on");
 	//pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
+	pythia.readString("BoseEinstein:widthSep = 1.0");
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -195,6 +196,9 @@ int main(int argc, char *argv[])
 						out.close();
 						++count;
 					}
+
+					if ( thermal_only and p.status() != 99 )	// only works for mom.-space modifications
+						continue;
 
 					particles_to_output.push_back( p );
 
