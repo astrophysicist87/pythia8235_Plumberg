@@ -117,7 +117,7 @@ std::cout << "PartonVertex::vertexFSR(): "
 			<< vStart << "   " << widthEmission << "   "
 			<< pT << "   " << vSmear << std::endl;
   //event[iNow].vProd( vStart + vSmear);
-  event[iNow].vProd( ( vStart + vSmear ) * unit_conversion_factor );
+  event[iNow].vProd( vStart + vSmear * unit_conversion_factor );
 
 
 }
@@ -146,7 +146,7 @@ std::cout << "PartonVertex::vertexISR(): "
 			<< vStart << "   " << widthEmission << "   "
 			<< pT << "   " << vSmear << std::endl;
   //event[iNow].vProd( vStart + vSmear);
-  event[iNow].vProd( ( vStart + vSmear ) * unit_conversion_factor );
+  event[iNow].vProd( vStart + vSmear * unit_conversion_factor );
 
 }
 
