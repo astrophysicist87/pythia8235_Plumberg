@@ -79,10 +79,12 @@ private:
   // Vector of hadrons to study.
   vector<BoseEinsteinHadron> hadronBE;
 
-  int number_of_pairs, number_of_shifted_pairs;
+  int enhanceMode;
+  int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
 
   // Calculate shift and (unnormalized) compensation for pair.
-  void shiftPair(int i1, int i2, int iHad);
+  void shiftPair_fixedQRef(int i1, int i2, int iHad);
+  void shiftPair_STint(int i1, int i2, int iHad);
 
 };
 

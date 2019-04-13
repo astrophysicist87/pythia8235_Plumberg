@@ -52,6 +52,9 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
+  QRef     = settings.parm("BoseEinstein:QRef");
+  enhanceMode
+           = settings.parm("BoseEinstein:enhanceMode");
 
   // Masses of particles with Bose-Einstein implemented.
   for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -69,6 +72,8 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
   number_of_pairs = 0;
   number_of_shifted_pairs = 0;
+  number_of_too_close_pairs = 0;
+  number_of_too_separated_pairs = 0;
 
   // Done.
   return true;
@@ -104,9 +109,22 @@ bool BoseEinstein::shiftEvent( Event& event) {
     nStored[iSpecies + 1] = hadronBE.size();
 
     // Loop through pairs of identical particles and find shifts.
-    for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
-    for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-      shiftPair( i1, i2, iTab);
+	switch ( enhanceMode )
+	{
+		case 0:
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+			  shiftPair_fixedQRef( i1, i2, iTab);
+			break;
+		case 1:
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+			  shiftPair_STint( i1, i2, iTab);
+			break;
+		default:
+			// Do nothing.
+			break;
+	}
   }
 
   // Must have at least two pairs to carry out compensation.
@@ -157,8 +175,11 @@ bool BoseEinstein::shiftEvent( Event& event) {
     event[ iNew ].p( hadronBE[i].p );
   }
 
-  cout << "BoseEinstein(): numbers of pairs and shifted pairs = "
-		<< number_of_pairs << "   " << number_of_shifted_pairs << endl;
+  cout << "BoseEinstein(): pair counts = "
+		<< number_of_pairs << "   "
+		<< number_of_shifted_pairs << "   "
+		<< number_of_too_close_pairs << "   "
+		<< number_of_too_separated_pairs << endl;
 
   // Done.
   return true;
@@ -169,30 +190,155 @@ bool BoseEinstein::shiftEvent( Event& event) {
 
 // Calculate shift and (unnormalized) compensation for pair.
 
-void BoseEinstein::shiftPair( int i1, int i2, int iTab) {
+void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
+
+	//======================================
+	// Start of initializations
+
+  // Set relevant scales.
+	// Multiples and inverses (= "radii") of distance parameters in Q-space.
+	QRef2    = 2. * QRef;
+	QRef3    = 3. * QRef;
+	R2Ref    = 1. / (QRef * QRef);
+	R2Ref2   = 1. / (QRef2 * QRef2);
+	R2Ref3   = 1. / (QRef3 * QRef3);
+
+  // Set various tables on a per-pair basis.
+  double Qnow, Q2now, centerCorr;
+    // Step size and number of steps in normal table.
+    deltaQ[iTab]      = STEPSIZE * min(mPair[iTab], QRef);
+    nStep[iTab]       = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
+    maxQ[iTab]        = (nStep[iTab] - 0.1) * deltaQ[iTab];
+    centerCorr        = deltaQ[iTab] * deltaQ[iTab] / 12.;
+
+    // Construct normal table recursively in Q space.
+    shift[iTab][0]    = 0.;
+    for (int i = 1; i <= nStep[iTab]; ++i) {
+      Qnow            = deltaQ[iTab] * (i - 0.5);
+      Q2now           = Qnow * Qnow;
+      shift[iTab][i]  = shift[iTab][i - 1] + exp(-Q2now * R2Ref)
+        * deltaQ[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
+    }
+
+    // Step size and number of steps in compensation table.
+    deltaQ3[iTab]     = STEPSIZE * min(mPair[iTab], QRef3);
+    nStep3[iTab]      = min( 199, 1 + int(9. * QRef / deltaQ3[iTab]) );
+    maxQ3[iTab]       = (nStep3[iTab] - 0.1) * deltaQ3[iTab];
+    centerCorr        = deltaQ3[iTab] * deltaQ3[iTab] / 12.;
+
+    // Construct compensation table recursively in Q space.
+    shift3[iTab][0]   = 0.;
+    for (int i = 1; i <= nStep3[iTab]; ++i) {
+      Qnow            = deltaQ3[iTab] * (i - 0.5);
+      Q2now           = Qnow * Qnow;
+      shift3[iTab][i] = shift3[iTab][i - 1] + exp(-Q2now * R2Ref3)
+        * deltaQ3[iTab] * (Q2now + centerCorr) / sqrt(Q2now + m2Pair[iTab]);
+    }
+	// End of initializations
+	//======================================
+
+
+  // Calculate old relative momentum.
+  double Q2old = m2(hadronBE[i1].p, hadronBE[i2].p) - m2Pair[iTab];
+  if (Q2old < Q2MIN) return;
+  double Qold  = sqrt(Q2old);
+  double psFac = sqrt(Q2old + m2Pair[iTab]) / Q2old;
+
+  // Calculate new relative momentum for normal shift.
+  double Qmove = 0.;
+  if (Qold < deltaQ[iTab]) Qmove = Qold / 3.;
+  else if (Qold < maxQ[iTab]) {
+    double realQbin = Qold / deltaQ[iTab];
+    int    intQbin  = int( realQbin );
+    double inter    = (pow3(realQbin) - pow3(intQbin))
+      / (3 * intQbin * (intQbin + 1) + 1);
+    Qmove = ( shift[iTab][intQbin] + inter * (shift[iTab][intQbin + 1]
+      - shift[iTab][intQbin]) ) * psFac;
+  }
+  else Qmove = shift[iTab][nStep[iTab]] * psFac;
+  double Q2new = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove), 2. / 3.);
+
+  // Calculate corresponding three-momentum shift.
+  double Q2Diff    = Q2new - Q2old;
+  double p2DiffAbs = (hadronBE[i1].p - hadronBE[i2].p).pAbs2();
+  double p2AbsDiff = hadronBE[i1].p.pAbs2() - hadronBE[i2].p.pAbs2();
+  double eSum      = hadronBE[i1].p.e() + hadronBE[i2].p.e();
+  double eDiff     = hadronBE[i1].p.e() - hadronBE[i2].p.e();
+  double sumQ2E    = Q2Diff + eSum * eSum;
+  double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+  double rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+  double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+    + Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+
+  // Add shifts to sum. (Energy component dummy.)
+  Vec4   pDiff     = factor * (hadronBE[i1].p - hadronBE[i2].p);
+  hadronBE[i1].pShift += pDiff;
+  hadronBE[i2].pShift -= pDiff;
+
+  // Calculate new relative momentum for compensation shift.
+  double Qmove3 = 0.;
+  if (Qold < deltaQ3[iTab]) Qmove3 = Qold / 3.;
+  else if (Qold < maxQ3[iTab]) {
+    double realQbin = Qold / deltaQ3[iTab];
+    int    intQbin  = int( realQbin );
+    double inter    = (pow3(realQbin) - pow3(intQbin))
+      / (3 * intQbin * (intQbin + 1) + 1);
+    Qmove3 = ( shift3[iTab][intQbin] + inter * (shift3[iTab][intQbin + 1]
+      - shift3[iTab][intQbin]) ) * psFac;
+  }
+  else Qmove3 = shift3[iTab][nStep3[iTab]] *psFac;
+  double Q2new3 = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove3), 2. / 3.);
+
+  // Calculate corresponding three-momentum shift.
+  Q2Diff    = Q2new3 - Q2old;
+  sumQ2E    = Q2Diff + eSum * eSum;
+  rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+  rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+  factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+    + Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+
+  // Extra dampening factor to go from BE_3 to BE_32.
+  factor   *= 1. - exp(-Q2old * R2Ref2);
+
+  // Add shifts to sum. (Energy component dummy.)
+  pDiff     = factor * (hadronBE[i1].p - hadronBE[i2].p);
+  hadronBE[i1].pComp += pDiff;
+  hadronBE[i2].pComp -= pDiff;
+
+}
+
+void BoseEinstein::shiftPair_STint( int i1, int i2, int iTab) {
 
 	//======================================
 	// Start of modified initializations
-  // Set width of BE enhancement using pair's coordinate separation.
-  Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
-
-  // Coordinate separation in GeV^{-1}.
-  xDiff *= MM2FM / HBARC;
-
-  number_of_pairs++;
-
-  // Check that QRef will not be too large or too small: 0.05 <= QRef <= 1.0
-  if ( abs( xDiff.mCalc() ) < 1.0 or abs( xDiff.mCalc() ) > 20.0 ) return;
-
-  number_of_shifted_pairs++;
 
   // Set relevant scales.
-  R2Ref   = abs( xDiff * xDiff );
-  QRef     = 1 / sqrt(R2Ref);
-  QRef2    = 2. * QRef;
-  QRef3    = 3. * QRef;
-  R2Ref2   = R2Ref / 4.0;
-  R2Ref3   = R2Ref / 9.0;
+	// Set width of BE enhancement using pair's coordinate separation.
+	Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+
+	// Coordinate separation in GeV^{-1}.
+	xDiff *= MM2FM / HBARC;
+
+	number_of_pairs++;
+
+	// Check that QRef will not be too large or too small: 0.05 <= QRef <= 1.0
+	if ( abs( xDiff.mCalc() ) < 1.0 or abs( xDiff.mCalc() ) > 20.0 )
+	{
+		if ( abs( xDiff.mCalc() ) < 1.0 )
+			number_of_too_close_pairs++;
+		else
+			number_of_too_separated_pairs++;
+		return;
+	}
+
+	number_of_shifted_pairs++;
+
+	R2Ref   = abs( xDiff * xDiff );
+	QRef     = 1 / sqrt(R2Ref);
+	QRef2    = 2. * QRef;
+	QRef3    = 3. * QRef;
+	R2Ref2   = R2Ref / 4.0;
+	R2Ref3   = R2Ref / 9.0;
 
   // Set various tables on a per-pair basis.
   double Qnow, Q2now, centerCorr;

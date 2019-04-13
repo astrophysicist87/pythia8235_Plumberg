@@ -66,9 +66,10 @@ int main(int argc, char *argv[])
 	//pythia.readString("PartonVertex:setVertex = on");
 
 	// turn on and set Bose-Einstein effects
-	pythia.readString("HadronLevel:BoseEinstein = on");
-	//pythia.readString("BoseEinstein:QRef = " + string(argv[6]));
+	//pythia.readString("HadronLevel:BoseEinstein = on");
+	pythia.readString("BoseEinstein:QRef = 0.2");
 	pythia.readString("BoseEinstein:widthSep = 1.0");
+	pythia.readString("BoseEinstein:enhanceMode = 1");
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -132,6 +133,8 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 	int count = 0;
+
+	bool thermal_only = true;
 
 	// Estimate centrality class limits
 	const int n_events_to_use = 10000;
@@ -197,7 +200,8 @@ int main(int argc, char *argv[])
 						++count;
 					}
 
-					if ( thermal_only and p.status() != 99 )	// only works for mom.-space modifications
+				//	if ( thermal_only and p.status() != 99 )	// only works for mom.-space modifications
+				if ( thermal_only and p.status() >= 90 )        // if pion is decay product
 						continue;
 
 					particles_to_output.push_back( p );
