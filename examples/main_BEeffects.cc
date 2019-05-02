@@ -62,14 +62,20 @@ int main(int argc, char *argv[])
 		  };
 
 	// Turn on tracking of space-time information
-	pythia.readString("Fragmentation:setVertices = on");
+	//pythia.readString("Fragmentation:setVertices = on");
 	//pythia.readString("PartonVertex:setVertex = on");
 
 	// turn on and set Bose-Einstein effects
 	//pythia.readString("HadronLevel:BoseEinstein = on");
-	pythia.readString("BoseEinstein:QRef = 0.2");
-	pythia.readString("BoseEinstein:widthSep = 1.0");
-	pythia.readString("BoseEinstein:enhanceMode = 1");
+	//pythia.readString("BoseEinstein:QRef = 0.2");
+	//pythia.readString("BoseEinstein:enhanceMode = 1");
+
+	pythia.readFile( "main_BEeffects.cmnd" );
+
+	bool thermal_only = true;
+	// if true, consider BE effects only for directly produced pions
+	if ( thermal_only )
+		pythia.readString("BoseEinstein:widthSep = 1.0");
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -133,8 +139,6 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 	int count = 0;
-
-	bool thermal_only = true;
 
 	// Estimate centrality class limits
 	const int n_events_to_use = 10000;
@@ -200,9 +204,19 @@ int main(int argc, char *argv[])
 						++count;
 					}
 
-				//	if ( thermal_only and p.status() != 99 )	// only works for mom.-space modifications
-				if ( thermal_only and p.status() >= 90 )        // if pion is decay product
-						continue;
+					// if only looking at thermal (i.e., non-decay) pions
+					if ( thermal_only )
+					{
+						bool momentum_space_modifications = pythia.settings.flag("HadronLevel:BoseEinstein");
+
+						bool pion_to_skip = ( 	momentum_space_modifications
+													and p.status() != 99 )	// pion is decay not affected by modifications
+												or ( ( not momentum_space_modifications )
+													and p.status() >= 90 );	// pion is just a normal decay product
+					
+						if ( pion_to_skip )
+							continue;
+					}
 
 					particles_to_output.push_back( p );
 

@@ -24,9 +24,9 @@ OverlappingRopeDipole::OverlappingRopeDipole(RopeDipole* d, double m0,
   RotBstMatrix& r) : dipole(d), dir(1) {
 
   // Coordinates in other dipole's rest frame
-  b1 = d->d1Ptr()->getParticlePtr()->vProd();
+  b1 = d->d1Ptr()->getParticlePtr()->vProd() * femtometer;
   b1.rotbst(r);
-  b2 = d->d2Ptr()->getParticlePtr()->vProd();
+  b2 = d->d2Ptr()->getParticlePtr()->vProd() * femtometer;
   b2.rotbst(r);
   y1 = d->d1Ptr()->rap(m0,r);
   y2 = d->d2Ptr()->rap(m0,r);
