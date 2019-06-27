@@ -392,6 +392,7 @@ bool MiniStringFragmentation::ministring2one( int iSub,
       double transX = rndmPtr -> gauss();
       double transY = rndmPtr -> gauss();
       prodPoint = xySmear * (transX * eX + transY * eY) / sqrt(2.);
+std::cout << "395: prodPoint = " << prodPoint << std::endl;
       // Keep proper or actual time constant when including the smearing.
       // Latter case to be done better when introducing MPI vertices.
       if (constantTau) prodPoint.e( prodPoint.pAbs() );
@@ -506,6 +507,7 @@ void MiniStringFragmentation::setHadronVertices(Event& event,
         double transX = rndmPtr->gauss();
         double transY = rndmPtr->gauss();
         Vec4 transversePos = xySmear * (transX * eX + transY * eY) / sqrt(2.);
+std::cout << "510: transversePos = " << transversePos << std::endl;
         positionTot = transversePos + longitudinal[i];
 
         // Keep proper or actual time constant when including the smearing.

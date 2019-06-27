@@ -1199,6 +1199,7 @@ void StringFragmentation::setHadronVertices( Event& event) {
         double transX = rndmPtr -> gauss();
         double transY = rndmPtr -> gauss();
         Vec4 transversePos = xySmear * (transX * eX + transY * eY) / sqrt(2.);
+std::cout << "1202: transversePos = " << transversePos << "   " << eX << "   " << eY << "   " << std::endl;
         positionTot = transversePos + longitudinal[i];
 
         // Keep proper or actual time constant when including the smearing.
@@ -1350,6 +1351,7 @@ void StringFragmentation::setHadronVertices( Event& event) {
             double transY = rndmPtr->gauss();
             Vec4 transversePos = xySmear * (transX * eX + transY * eY)
               / sqrt(2.);
+std::cout << "1354: transversePos = " << transversePos << "   " << eX << "   " << eY << "   " << std::endl;
             positionTot = transversePos + longitudinalPos[i];
 
             // Keep proper or actual time constant when including the smearing.

@@ -137,6 +137,17 @@ double besselI1(double x);
 double besselK0(double x);
 double besselK1(double x);
 
+// The spherical Bessel function of the first kind for real argument.
+inline double sphericalbesselj0(double x)
+{
+	if ( abs(x) <= 1.e-20 )
+		return ( 1.0 );
+	else
+		return ( sin(x)/x );
+}
+
+
+
 // Base class to encapsulate a (double) function of an arbitrary number
 // of (double) arguments (to avoid using function pointers).
 class FunctionEncapsulator  {

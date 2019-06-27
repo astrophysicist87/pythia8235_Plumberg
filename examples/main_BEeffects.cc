@@ -32,12 +32,12 @@ void print_particle_record(
 int main(int argc, char *argv[])
 {
 	// Check number of command-line arguments.
-	if (argc != 8)
+	if (argc != 9)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
 		cerr << "Usage: ./main_BEeffects [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
 				<< " [Number of events] [Results directory]"
-				<< " [Lower centrality %] [Upper centrality %]" << endl;
+				<< " [Lower centrality %] [Upper centrality %] [Thermal pions only]" << endl;
 		exit(8);
 	}
 
@@ -70,12 +70,33 @@ int main(int argc, char *argv[])
 	//pythia.readString("BoseEinstein:QRef = 0.2");
 	//pythia.readString("BoseEinstein:enhanceMode = 1");
 
+	//========================================
+	// Read in any standard Pythia options
 	pythia.readFile( "main_BEeffects.cmnd" );
 
-	bool thermal_only = true;
+	// thermal pions or resonance decays included
+	bool thermal_only = false;
+	if ( string(argv[8]) == "true" )
+		thermal_only = true;
+
+	bool track_unshifted_particles = true;
+	//if ( string(argv[-1]) == "false" )
+	//	track_unshifted_particles = false;
+
 	// if true, consider BE effects only for directly produced pions
-	if ( thermal_only )
+	bool momentum_space_modifications = pythia.settings.flag("HadronLevel:BoseEinstein");
+	if ( thermal_only and momentum_space_modifications )
 		pythia.readString("BoseEinstein:widthSep = 1.0");
+
+	if ( momentum_space_modifications )
+		cout << "Using momentum space modifications!" << endl;
+	else
+		cout << "Not using momentum space modifications!" << endl;
+
+	if ( thermal_only )
+		cout << "Using thermal pions only!" << endl;
+	else
+		cout << "Using all pions!" << endl;
 
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -120,6 +141,9 @@ int main(int argc, char *argv[])
 	//string path = "./results/";
 	//string path = "/scratch/blixen/plumberg/results/";
 	string path = string(argv[5]) + "/";
+
+	//====================================
+	// files to hold actual output
 	ostringstream filename_stream, mult_fn_stream;
 	filename_stream //<< path
 					<< systemSpecs
@@ -131,6 +155,29 @@ int main(int argc, char *argv[])
 					<< ".dat";
 	ofstream outMultiplicities( (path + mult_fn_stream.str()).c_str());
 
+	//====================================
+	// in case we want separate files for unshifted particles
+	// (probably for debugging purposes)
+	//ofstream outmain_noShift;
+	//ofstream outfilenames_noShift;
+	//if ( track_unshifted_particles )
+	//{
+		ostringstream filename_noShift_stream;
+		filename_noShift_stream //<< path
+						<< systemSpecs
+						<< "_unshifted"
+						<< file_index_string
+						<< ".dat";
+		//outmain_noShift = ofstream( ( path + filename_noShift_stream.str()).c_str());
+		ofstream outmain_noShift( ( path + filename_noShift_stream.str()).c_str());
+
+		//outfilenames_noShift = ofstream(path + systemSpecs + "_unshifted_S_x_p_filenames.dat");
+		ofstream outfilenames_noShift(path + systemSpecs + "_unshifted_S_x_p_filenames.dat");
+		outfilenames_noShift << filename_noShift_stream.str() << endl;
+	//}
+
+	//====================================
+	// meta-files to record output files and locations
 	ofstream outfilenames(path + systemSpecs + "_S_x_p_filenames.dat");
 	outfilenames << filename_stream.str() << endl;
 
@@ -172,7 +219,7 @@ int main(int argc, char *argv[])
 		int event_multiplicity = 0;
 		int pion_multiplicity = 0;
 
-		vector<Particle> particles_to_output;
+		vector<Particle> particles_to_output, unshifted_particles_to_output;
 
 		for (int i = 0; i < pythia.event.size(); ++i)
 		{
@@ -204,10 +251,12 @@ int main(int argc, char *argv[])
 						++count;
 					}
 
+					const int pmother1 = p.mother1();
+					const int pmother2 = p.mother2();
+
 					// if only looking at thermal (i.e., non-decay) pions
 					if ( thermal_only )
 					{
-						bool momentum_space_modifications = pythia.settings.flag("HadronLevel:BoseEinstein");
 
 						bool pion_to_skip = ( 	momentum_space_modifications
 													and p.status() != 99 )	// pion is decay not affected by modifications
@@ -218,9 +267,25 @@ int main(int argc, char *argv[])
 							continue;
 					}
 
+					//=================================
+					// if also recording unshifted particles
+					if ( momentum_space_modifications
+							and track_unshifted_particles )
+					{
+						if ( pmother1 == pmother2 )
+							unshifted_particles_to_output.push_back( pythia.event[pmother1] );
+						else
+						{
+							cerr << "Encountered a problem!  Exiting..." << endl;
+							exit(8);
+						}
+					}
+
+					// save the final (shifted) particles, no matter what
 					particles_to_output.push_back( p );
 
 					pion_multiplicity++;
+
 				}
 			}
 		}
@@ -233,7 +298,15 @@ int main(int argc, char *argv[])
 		if ( not event_in_chosen_centrality_class )
 			continue;
 
+		//========================================
+		// output physical particles here
 		print_particle_record( iEvent, particles_to_output, outmain );
+
+		//========================================
+		// output unshifted particles here in case
+		// also tracking these
+		if ( momentum_space_modifications and track_unshifted_particles )
+			print_particle_record( iEvent, unshifted_particles_to_output, outmain_noShift );
 
 		// If too many events for single file, set-up new file here
 		if ( (iEvent + 1) % max_events_per_file == 0

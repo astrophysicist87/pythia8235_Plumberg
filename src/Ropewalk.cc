@@ -24,9 +24,9 @@ OverlappingRopeDipole::OverlappingRopeDipole(RopeDipole* d, double m0,
   RotBstMatrix& r) : dipole(d), dir(1) {
 
   // Coordinates in other dipole's rest frame
-  b1 = d->d1Ptr()->getParticlePtr()->vProd() * femtometer;
+  b1 = d->d1Ptr()->getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   b1.rotbst(r);
-  b2 = d->d2Ptr()->getParticlePtr()->vProd() * femtometer;
+  b2 = d->d2Ptr()->getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   b2.rotbst(r);
   y1 = d->d1Ptr()->rap(m0,r);
   y2 = d->d2Ptr()->rap(m0,r);
@@ -110,10 +110,10 @@ void RopeDipole::propagateInit(double deltat) {
       "propagate a RopeDipoleEnd with mT = 0");
 
   // New vertices in the lab frame.
-  Vec4 newv1 = Vec4(d1.getParticlePtr()->xProd() + millimeter * deltat * pcm.px() / mTc,
-                d1.getParticlePtr()->yProd() + millimeter * deltat * pcm.py() / mTc, 0, 0);
-  Vec4 newv2 = Vec4(d2.getParticlePtr()->xProd() + millimeter * deltat * pam.px() / mTa,
-                d2.getParticlePtr()->yProd() + millimeter * deltat * pam.py() / mTa, 0, 0);
+  Vec4 newv1 = Vec4(d1.getParticlePtr()->xProd() + ChristopherPlumbergUnits::millimeter * deltat * pcm.px() / mTc,
+                d1.getParticlePtr()->yProd() + ChristopherPlumbergUnits::millimeter * deltat * pcm.py() / mTc, 0, 0);
+  Vec4 newv2 = Vec4(d2.getParticlePtr()->xProd() + ChristopherPlumbergUnits::millimeter * deltat * pam.px() / mTa,
+                d2.getParticlePtr()->yProd() + ChristopherPlumbergUnits::millimeter * deltat * pam.py() / mTa, 0, 0);
   // Set the new vertices deep.
   d1.getParticlePtr()->vProd(newv1);
   d2.getParticlePtr()->vProd(newv2);
@@ -136,11 +136,11 @@ void RopeDipole::propagate(double deltat, double m0) {
     // Propagate excitations.
 
     if (em.pT() > 0.0){
-      Vec4 newVert = Vec4(eItr->second->xProd() + millimeter * deltat * em.px() / em.pT(),
-                eItr->second->yProd() + millimeter * deltat * em.py() / em.pT(), 0, 0);
+      Vec4 newVert = Vec4(eItr->second->xProd() + ChristopherPlumbergUnits::millimeter * deltat * em.px() / em.pT(),
+                eItr->second->yProd() + ChristopherPlumbergUnits::millimeter * deltat * em.py() / em.pT(), 0, 0);
       eItr->second->vProd(newVert);
     }
-    else eItr->second->vProd( millimeter * bInterpolateLab(eItr->first,m0) );
+    else eItr->second->vProd( ChristopherPlumbergUnits::millimeter * bInterpolateLab(eItr->first,m0) );
   }
 
 }
@@ -352,9 +352,9 @@ Vec4 RopeDipole::dipoleMomentum() {
 
 Vec4 RopeDipole::bInterpolateDip(double y, double m0) {
   if(!hasRotTo) getDipoleRestFrame();
-  Vec4 bb1 = d1.getParticlePtr()->vProd() * femtometer;
+  Vec4 bb1 = d1.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   bb1.rotbst(rotTo);
-  Vec4 bb2 = d2.getParticlePtr()->vProd() * femtometer;
+  Vec4 bb2 = d2.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   bb2.rotbst(rotTo);
   double y1 = d1.rap(m0,rotTo);
   double y2 = d2.rap(m0,rotTo);
@@ -368,8 +368,8 @@ Vec4 RopeDipole::bInterpolateDip(double y, double m0) {
 
 Vec4 RopeDipole::bInterpolateLab(double y, double m0) {
 
-  Vec4 bb1 = d1.getParticlePtr()->vProd() * femtometer;
-  Vec4 bb2 = d2.getParticlePtr()->vProd() * femtometer;
+  Vec4 bb1 = d1.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
+  Vec4 bb2 = d2.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   double y1 = d1.rap(m0);
   double y2 = d2.rap(m0);
   return bb1 + y * (bb2 - bb1) / (y2 - y1);
@@ -383,8 +383,8 @@ Vec4 RopeDipole::bInterpolateLab(double y, double m0) {
 
 Vec4 RopeDipole::bInterpolate(double y, RotBstMatrix rb, double m0) {
 
-  Vec4 bb1 = d1.getParticlePtr()->vProd() * femtometer;
-  Vec4 bb2 = d2.getParticlePtr()->vProd() * femtometer;
+  Vec4 bb1 = d1.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
+  Vec4 bb2 = d2.getParticlePtr()->vProd() * ChristopherPlumbergUnits::femtometer;
   bb1.rotbst(rb);
   bb2.rotbst(rb);
   double y1 = d1.rap(m0);
@@ -753,7 +753,7 @@ void Ropewalk::shoveTheDipoles(Event& event) {
       // We boost the excitation back from dipole rest frame.
       tmp[j]->recoil(ex,false);
       Particle pp = Particle(21, 22, 0, 0, 0, 0, 0, 0, ex);
-      pp.vProd( millimeter * tmp[j]->bInterpolateLab(ySample,m0) );
+      pp.vProd( ChristopherPlumbergUnits::millimeter * tmp[j]->bInterpolateLab(ySample,m0) );
       eParticles[i].push_back(pp);
     }
   // Construct all pairs of possible excitations in this slice.

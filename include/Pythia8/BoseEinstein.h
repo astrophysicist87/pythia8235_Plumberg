@@ -10,6 +10,9 @@
 #ifndef Pythia8_BoseEinstein_H
 #define Pythia8_BoseEinstein_H
 
+#include <chrono>
+#include <random>
+
 #include "Pythia8/Basics.h"
 #include "Pythia8/Event.h"
 #include "Pythia8/ParticleData.h"
@@ -65,7 +68,7 @@ private:
 
   // Initialization data, read from Settings.
   bool   doPion, doKaon, doEta;
-  double lambda, QRef;
+  double lambda, QRef, RRef;
 
   // Pointer to various information on the generation.
   Info* infoPtr;
@@ -84,7 +87,8 @@ private:
 
   // Calculate shift and (unnormalized) compensation for pair.
   void shiftPair_fixedQRef(int i1, int i2, int iHad);
-  void shiftPair_STint(int i1, int i2, int iHad);
+  void shiftPair_STint_GaussBE(int i1, int i2, int iHad);
+  void shiftPair_STint_SphBesselBE(int i1, int i2, int iHad);
 
 };
 

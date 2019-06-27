@@ -23,7 +23,14 @@
 #include "Pythia8/Settings.h"
 #include "Pythia8/PythiaStdlib.h"
 
+namespace ChristopherPlumbergUnits
+{
+const double femtometer = 1.0e-12;
+const double millimeter = 1.0e12;
+}
+
 namespace Pythia8 {
+
 
 //==================================================================
 

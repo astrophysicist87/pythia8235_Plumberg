@@ -1,5 +1,5 @@
 # PYTHIA configuration file.
-# Generated on Fri Mar 29 11:04:36 CET 2019 with the user supplied options:
+# Generated on Wed Jun 26 14:57:17 CEST 2019 with the user supplied options:
 
 # Install directory prefixes.
 PREFIX_BIN=/home/blixen/plumberg/pythia8235_MYCOPY/bin
@@ -10,7 +10,7 @@ PREFIX_SHARE=/home/blixen/plumberg/pythia8235_MYCOPY/share/Pythia8
 # Compilation flags (see ./configure --help for further documentation).
 ENABLE_SHARED=false
 CXX=g++
-CXX_COMMON=-O2  -pedantic -W -Wall -Wshadow -fPIC
+CXX_COMMON=-O2  -pedantic -W -Wall -Wshadow -fPIC -std=c++11
 CXX_SHARED=-shared
 CXX_SONAME=-Wl,-soname,
 LIB_SUFFIX=.so
