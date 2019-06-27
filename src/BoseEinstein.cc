@@ -659,6 +659,24 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 	else Qmove = shift[iTab][nStep[iTab]] * psFac;
 	double Q2new = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove), 2. / 3.);
 
+	bool try_alternate_shift_calculation = false;
+	if ( try_alternate_shift_calculation )
+	{
+		// compute constant integral
+
+		// compute shift integral (use Simpson's rule)
+		double f_at_a = 
+		double deltaQ_estimate = h * ( f_at_a + 4.0*f_at_mid + f_at_b ) / 3.0;
+
+		// sum must be 0 (solve with Newton's method)
+
+		// estimate upper and lower bounds for shift value
+		const double lower_bound_estimate = 0.0;
+		const double upper_bound_estimate = 3.0 * deltaQ_estimate;
+
+		// iterate as needed
+	}
+
 	if (iTab == 2)
 		cout << setprecision(8)
 				<< "CHECK MOMENTUM SHIFT (EnMode = 2): "
