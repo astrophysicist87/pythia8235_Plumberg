@@ -40,6 +40,56 @@ const int    BoseEinstein::NCOMPSTEP  = 10;
 
 // Find settings. Precalculate table used to find momentum shifts.
 
+/*
+void BoseEinstein::dump_row(size_t i, double *R)
+{
+   printf("R[%2zu] = ", i);
+   for(size_t j = 0; j <= i; ++j){
+      printf("%f ", R[j]);
+   }
+   printf("\n");
+}
+
+double BoseEinstein::romberg( double (*f)(double),
+				double a, double b,
+				size_t max_steps, double acc )
+{
+   double R1[max_steps], R2[max_steps]; //buffers
+   double *Rp = &R1[0], *Rc = &R2[0]; //Rp is previous row, Rc is current row
+   double h = (b-a); //step size
+   Rp[0] = (f(a) + f(b))*h*.5; //first trapezoidal step
+
+   dump_row(0, Rp);
+
+   for(size_t i = 1; i < max_steps; ++i){
+      h /= 2.;
+      double c = 0;
+      size_t ep = 1 << (i-1); //2^(n-1)
+      for(size_t j = 1; j <= ep; ++j){
+         c += f(a+(2*j-1)*h);
+      }
+      Rc[0] = h*c + .5*Rp[0]; //R(i,0)
+
+      for(size_t j = 1; j <= i; ++j){
+         double n_k = pow(4, j);
+         Rc[j] = (n_k*Rc[j-1] - Rp[j-1])/(n_k-1); //compute R(i,j)
+      }
+
+      //Dump ith column of R, R[i,i] is the best estimate so far
+      dump_row(i, Rc);
+
+      if(i > 1 && fabs(Rp[i-1]-Rc[i]) < acc){
+         return Rc[i-1];
+      }
+
+      //swap Rn and Rc as we only need the last row
+      double *rt = Rp;
+      Rp = Rc;
+      Rc = rt;
+   }
+   return Rp[max_steps-1]; //return our best guess
+}*/
+
 bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   ParticleData& particleData) {
 
@@ -663,18 +713,53 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 	if ( try_alternate_shift_calculation )
 	{
 		// compute constant integral
+		double c0 = 0.0;
+		for (int ipt = 0; ipt < npts; ipt++)
+		{
+			double q_loc = cen + hw * x_pts[ipt];
+			c0 += hw * x_wts[ipt] * pow2(qloc)
+				* sphericalbesselj0(qloc*RRef)
+				/ sqrt(pow2(qloc) + m2Pair[iTab]);
+		}
 
-		// compute shift integral (use Simpson's rule)
-		double f_at_a = 
-		double deltaQ_estimate = h * ( f_at_a + 4.0*f_at_mid + f_at_b ) / 3.0;
+		double initial_estimate
+			= c0 * sqrt(pow2(Q0)+m2Pair[iTab])
+				/ ( pow2(Q0) *(1.0+sphericalbesselj0(Q0*RRef)) )
+		double deltaQ_max = 200.0 * c0 * sqrt(pow2(Q0)+m2Pair[iTab]) / pow2(Q0);
+		double deltaQ_min = 0.0;
+		double current_estimate = initial_estimate;
+		double new_estimate = initial_estimate;
 
 		// sum must be 0 (solve with Newton's method)
-
-		// estimate upper and lower bounds for shift value
-		const double lower_bound_estimate = 0.0;
-		const double upper_bound_estimate = 3.0 * deltaQ_estimate;
-
 		// iterate as needed
+		const int NITER = 10;
+		for (int ITER = 0; ITER < NITER; ITER++)
+		{
+			const double a = Q0;
+			const double b = Q0 + current_estimate;
+			const double cen = 0.5 * (b + a);
+			const double hw = 0.5 * (b - a);
+
+			// get integral evaluation at current point
+			double f_val = c0;
+			for (int ipt = 0; ipt < npts; ipt++)
+			{
+				double q_loc = cen + hw * x_pts[ipt];
+				f_val += hw * x_wts[ipt] * pow2(qloc)
+					* sphericalbesselj0(qloc*RRef)
+					/ sqrt(pow2(qloc) + m2Pair[iTab]);
+			}
+
+			// get derivative evaluation at current point
+			double fp_val = pow2(Q_plus_dq)
+					* sphericalbesselj0(Q_plus_dq * RRef)
+					/ sqrt(pow2(Q_plus_dq) + m2Pair[iTab]);
+
+			new_estimate = current_estimate - f_val / fp_val;
+			current_estimate = new_estimate;
+		}
+
+
 	}
 
 	if (iTab == 2)
