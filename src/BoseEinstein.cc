@@ -18,6 +18,67 @@ namespace Pythia8 {
 // Constants: could be changed here if desired, but normally should not.
 // These are of technical nature, as described for each.
 
+const int npts = 7;
+const double x_pts_7[7] = { -0.94910791234275852,
+							-0.741531185599394440,
+							-0.40584515137739717,
+							0.0,
+							0.40584515137739717,
+							0.74153118559939444,
+							0.94910791234275852 };
+
+const double x_wts_7[7] = { 0.1294849661688696933,
+							0.2797053914892766679,
+							0.3818300505051189449,
+							0.4179591836734693878,
+							0.3818300505051189449,
+							0.2797053914892766679,
+							0.1294849661688696933 };
+
+const double x_pts_51[51] = {-0.9989099908489035, -0.9942612604367526, -0.9859159917359030, 
+							-0.9739033680193239, -0.9582678486139082, -0.9390675440029624, 
+							-0.9163738623097802, -0.8902712180295273, -0.8608567111822924, 
+							-0.8282397638230648, -0.7925417120993812, -0.7538953544853755, 
+							-0.7124444575770366, -0.6683432211753701, -0.6217557046007233, 
+							-0.5728552163513038, -0.5218236693661858, -0.4688509042860411, 
+							-0.4141339832263039, -0.3578764566884095, -0.3002876063353319, 
+							-0.2415816664477987, -0.1819770269570775, -0.1216954210188888, 
+							-0.0609611001505787, 0.0, 0.0609611001505787, 0.1216954210188888, 
+							0.1819770269570775, 0.2415816664477987, 0.3002876063353319, 
+							0.3578764566884095, 0.4141339832263039, 0.4688509042860411, 
+							0.521823669366186, 0.572855216351304, 0.621755704600723, 
+							0.668343221175370, 0.712444457577037, 0.753895354485376, 
+							0.792541712099381, 0.828239763823065, 0.860856711182292, 
+							0.890271218029527, 0.916373862309780, 0.939067544002962, 
+							0.958267848613908, 0.973903368019324, 0.985915991735903, 
+							0.994261260436753, 0.998909990848903};
+const double x_wts_51[51] = {0.002796807171089895576, 0.006500337783252600292, 
+							0.010185191297821729939, 0.01383263400647782230, 
+							0.01742871472340105226, 0.02095998840170321058, 
+							0.02441330057378143427, 0.02777579859416247720, 
+							0.03103497129016000845, 0.03417869320418833624, 
+							0.03719526892326029284, 0.04007347628549645319, 
+							0.04280260799788008665, 0.04537251140765006875, 
+							0.04777362624062310200, 0.04999702015005740978, 
+							0.05203442193669708756, 0.05387825231304556143, 
+							0.05552165209573869302, 0.05695850772025866210, 
+							0.05818347398259214060, 0.05919199392296154378, 
+							0.05998031577750325209, 0.06054550693473779514, 
+							0.06088546484485634388, 0.0609989248412058802, 
+							0.06088546484485634388, 0.06054550693473779514, 
+							0.05998031577750325209, 0.05919199392296154378, 
+							0.05818347398259214060, 0.05695850772025866210, 
+							0.05552165209573869302, 0.05387825231304556143, 
+							0.05203442193669708756, 0.04999702015005740978, 
+							0.04777362624062310200, 0.04537251140765006875, 
+							0.04280260799788008665, 0.04007347628549645319, 
+							0.03719526892326029284, 0.03417869320418833624, 
+							0.03103497129016000845, 0.02777579859416247720, 
+							0.02441330057378143427, 0.02095998840170321058, 
+							0.01742871472340105226, 0.01383263400647782230, 
+							0.010185191297821729939, 0.006500337783252600292, 
+							0.002796807171089895576};
+
 // Enumeration of id codes and table for particle species considered.
 const int    BoseEinstein::IDHADRON[9] = { 211, -211, 111, 321, -321,
                                            130,  310, 221, 331 };
@@ -39,56 +100,6 @@ const int    BoseEinstein::NCOMPSTEP  = 10;
 //--------------------------------------------------------------------------
 
 // Find settings. Precalculate table used to find momentum shifts.
-
-/*
-void BoseEinstein::dump_row(size_t i, double *R)
-{
-   printf("R[%2zu] = ", i);
-   for(size_t j = 0; j <= i; ++j){
-      printf("%f ", R[j]);
-   }
-   printf("\n");
-}
-
-double BoseEinstein::romberg( double (*f)(double),
-				double a, double b,
-				size_t max_steps, double acc )
-{
-   double R1[max_steps], R2[max_steps]; //buffers
-   double *Rp = &R1[0], *Rc = &R2[0]; //Rp is previous row, Rc is current row
-   double h = (b-a); //step size
-   Rp[0] = (f(a) + f(b))*h*.5; //first trapezoidal step
-
-   dump_row(0, Rp);
-
-   for(size_t i = 1; i < max_steps; ++i){
-      h /= 2.;
-      double c = 0;
-      size_t ep = 1 << (i-1); //2^(n-1)
-      for(size_t j = 1; j <= ep; ++j){
-         c += f(a+(2*j-1)*h);
-      }
-      Rc[0] = h*c + .5*Rp[0]; //R(i,0)
-
-      for(size_t j = 1; j <= i; ++j){
-         double n_k = pow(4, j);
-         Rc[j] = (n_k*Rc[j-1] - Rp[j-1])/(n_k-1); //compute R(i,j)
-      }
-
-      //Dump ith column of R, R[i,i] is the best estimate so far
-      dump_row(i, Rc);
-
-      if(i > 1 && fabs(Rp[i-1]-Rc[i]) < acc){
-         return Rc[i-1];
-      }
-
-      //swap Rn and Rc as we only need the last row
-      double *rt = Rp;
-      Rp = Rc;
-      Rc = rt;
-   }
-   return Rp[max_steps-1]; //return our best guess
-}*/
 
 bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   ParticleData& particleData) {
@@ -709,31 +720,90 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 	else Qmove = shift[iTab][nStep[iTab]] * psFac;
 	double Q2new = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove), 2. / 3.);
 
-	bool try_alternate_shift_calculation = false;
+	double my_alternate_result = 0.0;
+	//double c0_glob = 0.0;
+
+	bool try_alternate_shift_calculation = true;
 	if ( try_alternate_shift_calculation )
 	{
+		const double Q0 = Qold;
+
 		// compute constant integral
 		double c0 = 0.0;
-		for (int ipt = 0; ipt < npts; ipt++)
+		/*for (int ipt = 0; ipt < 7; ipt++)
 		{
-			double q_loc = cen + hw * x_pts[ipt];
-			c0 += hw * x_wts[ipt] * pow2(qloc)
+			const double cen = 0.5 * Q0;
+			const double hw = 0.5 * Q0;
+			double qloc = cen + hw * x_pts_7[ipt];
+			c0 += hw * x_wts_7[ipt] * pow2(qloc)
 				* sphericalbesselj0(qloc*RRef)
 				/ sqrt(pow2(qloc) + m2Pair[iTab]);
-		}
+		}*/
+		const double max = Q0 * RRef;
+		const int nPeriods = static_cast<int>( 0.5*max/M_PI );
 
+		// do any whole periods which will fit
+		for ( int iPeriod = 0; iPeriod < nPeriods; iPeriod++ )
+		{
+			double tmp = 0.0;
+			const double cen = (2.0 * iPeriod + 1.0) * M_PI;
+			const double hw = M_PI;
+			for ( int ipt = 0; ipt < 7; ipt++ )
+			{
+				double xloc = cen + hw * x_pts_7[ipt];
+				tmp += hw * x_wts_7[ipt] * xloc * sin(xloc)
+					/ sqrt(pow2(xloc) + m2Pair[iTab]*pow2(RRef));
+			}
+			//if (iTab == 2)
+			//	cout << setprecision(8) << "CHECK: " << iPeriod << "(" << cen - hw << "," << cen + hw << "): "
+			//			<< tmp << "   " << c0 << endl;
+			c0 += tmp;
+		}
+		
+		// now do remainder
+		double tmp2 = 0.0;
+		const double cen0 = 0.5 * ( max + 2.0 * nPeriods * M_PI );
+		const double hw0 = 0.5 * ( max - 2.0 * nPeriods * M_PI );
+		for ( int ipt = 0; ipt < 7; ipt++ )
+		{
+			double xloc = cen0 + hw0 * x_pts_7[ipt];
+			tmp2 += hw0 * x_wts_7[ipt] * xloc * sin(xloc)
+				/ sqrt(pow2(xloc) + m2Pair[iTab]*pow2(RRef));
+		}
+		c0 += tmp2;
+		//if (iTab == 2)
+		//	cout << setprecision(8) << "CHECK: " << nPeriods << "(" << cen0 - hw0 << "," << cen0 + hw0 << "): "
+		//			<< tmp2 << "   " << c0 << "   " << c0/pow2(RRef) << endl;
+
+		
+		c0 /= pow2(RRef);
+
+		//if (iTab == 2)
+		//	cout << setprecision(8) << "CHECK MY VERSION: "
+		//			<< Qold*RRef << "   " << mPair[iTab]*RRef << ";   "
+		//			<< Qold << "   " << 0.5*mPair[iTab] << "   " << RRef << ":   "
+		//			<< c0 << endl;
+
+		// use the result to get initial estimate for delta Q
+		//c0_glob = c0;
 		double initial_estimate
-			= c0 * sqrt(pow2(Q0)+m2Pair[iTab])
-				/ ( pow2(Q0) *(1.0+sphericalbesselj0(Q0*RRef)) )
-		double deltaQ_max = 200.0 * c0 * sqrt(pow2(Q0)+m2Pair[iTab]) / pow2(Q0);
-		double deltaQ_min = 0.0;
+			= -c0 * sqrt(pow2(Q0)+m2Pair[iTab])
+				/ ( pow2(Q0) *(1.0+sphericalbesselj0(Q0*RRef)) );
+
 		double current_estimate = initial_estimate;
-		double new_estimate = initial_estimate;
+
+		/*cout << setprecision(8) << "CHECK MY VERSION: "
+				<< Qold << "   " << sqrt(Q2new) << "   "
+				<< 0.0 << "   " << initial_estimate << "   "
+				<< Qold + initial_estimate << endl;*/
 
 		// sum must be 0 (solve with Newton's method)
 		// iterate as needed
-		const int NITER = 10;
-		for (int ITER = 0; ITER < NITER; ITER++)
+		const int NITER = 100;
+		const double ACCURACYGOAL = 1.e-8;
+		double ratio = 0.0;
+		int ITER = 0;
+		do
 		{
 			const double a = Q0;
 			const double b = Q0 + current_estimate;
@@ -742,35 +812,48 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 
 			// get integral evaluation at current point
 			double f_val = c0;
-			for (int ipt = 0; ipt < npts; ipt++)
+			for (int ipt = 0; ipt < 7; ipt++)
 			{
-				double q_loc = cen + hw * x_pts[ipt];
-				f_val += hw * x_wts[ipt] * pow2(qloc)
-					* sphericalbesselj0(qloc*RRef)
+				double qloc = cen + hw * x_pts_7[ipt];
+				f_val += hw * x_wts_7[ipt] * pow2(qloc)
+					* (1.0 + sphericalbesselj0(qloc*RRef))
 					/ sqrt(pow2(qloc) + m2Pair[iTab]);
 			}
 
 			// get derivative evaluation at current point
-			double fp_val = pow2(Q_plus_dq)
-					* sphericalbesselj0(Q_plus_dq * RRef)
-					/ sqrt(pow2(Q_plus_dq) + m2Pair[iTab]);
+			double fp_val = pow2(b)
+					* (1.0 + sphericalbesselj0(b * RRef) )
+					/ sqrt(pow2(b) + m2Pair[iTab]);
 
-			new_estimate = current_estimate - f_val / fp_val;
-			current_estimate = new_estimate;
-		}
+			ratio = f_val / fp_val;
+			current_estimate -= ratio;
+			/*cout << setprecision(8) << "CHECK MY VERSION: "
+					<< Qold << "   " << sqrt(Q2new) << "   "
+					<< c0 << "   " << ITER << "   " << abs(ratio) << "   "
+					<< f_val << "   " << current_estimate << "   "
+					<< Qold + current_estimate << endl;*/
+			ITER++;
+		} while ( ITER < NITER and abs(ratio) > ACCURACYGOAL );
 
-
+		my_alternate_result = current_estimate;
 	}
 
-	if (iTab == 2)
+	//if (iTab == 2)
 		cout << setprecision(8)
 				<< "CHECK MOMENTUM SHIFT (EnMode = 2): "
-				<< Qold << "   " << relMomentumq.pAbs() << "   "
-				<< sqrt(m2(p1, p2) - m2Pair[iTab]) << "   " << sqrt(Q2new) << ";   "
-				<< 0.5*mPair[iTab] << ";   ("
-				<< (p1 + p2).m2Calc() << " =?= " << m2Pair[iTab] - (p1 - p2).m2Calc()<< ")   " 
-				<< relMomentumq << "   " << p1 << "   " << p2 << "   "
-				<< RRef << endl;
+				<< Qold << "   "
+				//<< relMomentumq.pAbs() << "   "
+				//<< sqrt(m2(p1, p2) - m2Pair[iTab]) << "   "
+				<< sqrt(Q2new) << "   "
+				<< Qold + my_alternate_result << "   "
+				<< 0.5*mPair[iTab]
+				//<< ";   ("
+				//<< (p1 + p2).m2Calc() << " =?= "
+				//<< m2Pair[iTab] - (p1 - p2).m2Calc()<< ")   " 
+				//<< relMomentumq << "   " << p1 << "   " << p2 << "   "
+				//<< c0_glob << "   "
+				//<< RRef
+				<< endl;
 
 	// Calculate corresponding three-momentum shift.
 	double Q2Diff    = Q2new - Q2old;
