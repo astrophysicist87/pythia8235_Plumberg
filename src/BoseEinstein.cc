@@ -35,7 +35,7 @@ const double x_wts_7[7] = { 0.1294849661688696933,
 							0.2797053914892766679,
 							0.1294849661688696933 };
 
-const double x_pts_51[51] = {-0.9989099908489035, -0.9942612604367526, -0.9859159917359030, 
+/*const double x_pts_51[51] = {-0.9989099908489035, -0.9942612604367526, -0.9859159917359030, 
 							-0.9739033680193239, -0.9582678486139082, -0.9390675440029624, 
 							-0.9163738623097802, -0.8902712180295273, -0.8608567111822924, 
 							-0.8282397638230648, -0.7925417120993812, -0.7538953544853755, 
@@ -77,7 +77,7 @@ const double x_wts_51[51] = {0.002796807171089895576, 0.006500337783252600292,
 							0.02441330057378143427, 0.02095998840170321058, 
 							0.01742871472340105226, 0.01383263400647782230, 
 							0.010185191297821729939, 0.006500337783252600292, 
-							0.002796807171089895576};
+							0.002796807171089895576};*/
 
 // Enumeration of id codes and table for particle species considered.
 const int    BoseEinstein::IDHADRON[9] = { 211, -211, 111, 321, -321,
@@ -85,8 +85,8 @@ const int    BoseEinstein::IDHADRON[9] = { 211, -211, 111, 321, -321,
 const int    BoseEinstein::ITABLE[9] = { 0, 0, 0, 1, 1, 1, 1, 2, 3 };
 
 // Distance between table entries, normalized to min( 2*mass, QRef).
-//const double BoseEinstein::STEPSIZE  = 0.05;
-const double BoseEinstein::STEPSIZE  = 0.01;
+const double BoseEinstein::STEPSIZE  = 0.05;
+//const double BoseEinstein::STEPSIZE  = 0.01;
 
 // Skip shift for two extremely close particles, to avoid instabilities.
 const double BoseEinstein::Q2MIN     = 1e-8;
@@ -153,7 +153,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 
 	//===========Added by Chris Plumberg================
 	// if using debugging version, reset pion momentum to random value
-	
+	///*
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
 
@@ -161,11 +161,14 @@ bool BoseEinstein::shiftEvent( Event& event) {
 	std::normal_distribution<double> distribution(0.0, scale);
 
 	// loop over particles in this event
+	int lastPion = -1;
 	for (int i = 0; i < event.size(); ++i)
 	{
 		Particle & p = event[i];
 		if ( p.isHadron() and p.id() == 211 )
 		{
+			// record this particle index
+			lastPion = i;
 
 			//================================
 			// random number generation here
@@ -176,10 +179,12 @@ bool BoseEinstein::shiftEvent( Event& event) {
 			p.yProd( FM2MM * distribution( generator ) );
 			p.zProd( FM2MM * distribution( generator ) );
 
-			/*const double px = 0.1 * distribution( generator );
+			/*const double pm = p.m();
+			const double px = 0.1 * distribution( generator );
 			const double py = 0.1 * distribution( generator );
 			const double pz = 0.1 * distribution( generator );
-			const double Epi = sqrt(0.13957*0.13957 + px*px + py*py + pz*pz);
+			//const double Epi = sqrt(0.13957*0.13957 + px*px + py*py + pz*pz);
+			const double Epi = sqrt(pm*pm + px*px + py*py + pz*pz);
 
 			// reset momenta
 			p.e( Epi );
@@ -203,6 +208,37 @@ bool BoseEinstein::shiftEvent( Event& event) {
 
 		}
 	}
+	
+	// Then add a bunch more pions...
+	if (false)
+	for (int i = 0; i < 1000; i++)
+	{
+		// same "mother" for all
+		int jNew = event.copy( lastPion, 99 );
+		//event[ iNew ].p( hadronBE[i].p );
+
+		// reset positions
+		event[ jNew ].tProd( 0.0 );
+		event[ jNew ].xProd( FM2MM * distribution( generator ) );
+		event[ jNew ].yProd( FM2MM * distribution( generator ) );
+		event[ jNew ].zProd( FM2MM * distribution( generator ) );
+
+		/*const double pm = event[ jNew ].m();
+		const double px = 0.1 * distribution( generator );
+		const double py = 0.1 * distribution( generator );
+		const double pz = 0.1 * distribution( generator );
+		//const double Epi = sqrt(0.13957*0.13957 + px*px + py*py + pz*pz);
+		const double Epi = sqrt(pm*pm + px*px + py*py + pz*pz);
+
+		// reset momenta
+		event[ jNew ].e( Epi );
+		event[ jNew ].px( px );
+		event[ jNew ].py( py );
+		event[ jNew ].pz( pz );*/
+
+		//cout << "Added particle in position = " << iNew << endl;
+	}
+	//*/
 	//===========End of Chris Plumberg's addition================
 
   // Loop over all hadron species with BE effects.
@@ -282,11 +318,11 @@ bool BoseEinstein::shiftEvent( Event& event) {
     }
   }
 
-cout << "CHECK ERROR: "
+/*cout << "CHECK ERROR: "
 		<< setprecision(16)
 		<< abs(eSumShifted - eSumOriginal) << "   "
 		<< COMPRELERR * eSumOriginal << "   "
-		<< COMPFACMAX * abs(eDiffByComp) << endl;
+		<< COMPFACMAX * abs(eDiffByComp) << endl;*/
 
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
@@ -302,14 +338,20 @@ cout << "CHECK ERROR: "
     event[ iNew ].p( hadronBE[i].p );
   }
 
-  cout << "BoseEinstein(): pair counts = "
+  /*cout << "BoseEinstein(): pair counts = "
 		<< number_of_pairs << "   "
 		<< number_of_shifted_pairs << "   "
 		<< number_of_too_close_pairs << "   "
-		<< number_of_too_separated_pairs << endl;
+		<< number_of_too_separated_pairs << endl;*/
 
 	//===========Added by Chris Plumberg================
-	// if using debugging version, reset pion momentum to random value
+	// just for fun
+	/*for (int i = 0; i < 100; i++)
+	{
+		//int iNew = event.append( Particle( 211 ) );
+		int iNew = event.copy( event.size()-1, 101 );
+		cout << "Added particle in position = " << iNew << endl;
+	}*/
 	/*for (int i = 0; i < event.size(); ++i)
 	{
 		Particle & p = event[i];
@@ -410,12 +452,12 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
   else Qmove = shift[iTab][nStep[iTab]] * psFac;
   double Q2new = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove), 2. / 3.);
 
-	cout << setprecision(6)
+	/*cout << setprecision(6)
 			<< "CHECK MOMENTUM SHIFT: "
 			<< Qold << "   " << sqrt(Q2new) << "   "
 			<< sqrt(m2(hadronBE[i1].p, hadronBE[i2].p) - m2Pair[iTab]) << "   "
 			<< hadronBE[i1].p << "   " << hadronBE[i2].p << "   "
-			<< sqrt(R2Ref) << endl;
+			<< sqrt(R2Ref) << endl;*/
 
   // Calculate corresponding three-momentum shift.
   double Q2Diff    = Q2new - Q2old;
@@ -634,7 +676,7 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 
 	// set relevant scales
 	RRef = xDiff.pAbs();
-	RRef = 5.0;	// just for debugging
+	//RRef = 5.0;	// just for debugging
 	QRef = 1.0 / RRef;
 
 	// --------------------------------------------------------------
@@ -657,8 +699,8 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 
 	// if we passed cuts on QRef, then proceed...
 
-	//const int NSTEP = 199;
-	const int NSTEP = 999;
+	const int NSTEP = 199;
+	//const int NSTEP = 999;
 
 	// Set various tables on a per-pair basis.
 	double Qnow, Q2now, centerCorr;
@@ -836,8 +878,15 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 		} while ( ITER < NITER and abs(ratio) > ACCURACYGOAL );
 
 		my_alternate_result = current_estimate;
+
+		// I don't think I need to do this
+		//Q2new = Q2old * pow( Qold / (Qold + 3. * lambda * my_alternate_result), 2. / 3.);
 	}
 
+	// use the new result
+	if (true) Q2new = pow2(Qold + my_alternate_result);
+
+	/*
 	//if (iTab == 2)
 		cout << setprecision(8)
 				<< "CHECK MOMENTUM SHIFT (EnMode = 2): "
@@ -846,6 +895,8 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 				//<< sqrt(m2(p1, p2) - m2Pair[iTab]) << "   "
 				<< sqrt(Q2new) << "   "
 				<< Qold + my_alternate_result << "   "
+				//<< sqrt(Q2old * pow( Qold / (Qold - 3. * my_alternate_result), 2. / 3.)) << "   "
+				//<< Qmove << "   "
 				<< 0.5*mPair[iTab]
 				//<< ";   ("
 				//<< (p1 + p2).m2Calc() << " =?= "
@@ -854,6 +905,7 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 				//<< c0_glob << "   "
 				//<< RRef
 				<< endl;
+	*/
 
 	// Calculate corresponding three-momentum shift.
 	double Q2Diff    = Q2new - Q2old;
@@ -872,6 +924,9 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
 	hadronBE[i1].pShift += pDiff;
 	hadronBE[i2].pShift -= pDiff;
 
+	//=================================
+	// Using old method here, so keep the correction (stuff)^(2/3) part
+	//=================================
   // Calculate new relative momentum for compensation shift.
   double Qmove3 = 0.;
   if (Qold < deltaQ3[iTab]) Qmove3 = Qold / 3.;
@@ -884,7 +939,7 @@ void BoseEinstein::shiftPair_STint_SphBesselBE( int i1, int i2, int iTab) {
       - shift3[iTab][intQbin]) ) * psFac;
   }
   else Qmove3 = shift3[iTab][nStep3[iTab]] *psFac;
-  double Q2new3 = Q2old * pow( Qold / (Qold + 3. * lambda * Qmove3), 2. / 3.);
+  double Q2new3 = Q2old * pow( Qold / (Qold + 3. * Qmove3), 2. / 3.);
 
   // Calculate corresponding three-momentum shift.
   Q2Diff    = Q2new3 - Q2old;

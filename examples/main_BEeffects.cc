@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 
 		++iEvent;
 
-	} while ( iEvent < total_number_of_events );
+	} while ( iEvent < total_number_of_events );	// continue until we've hit the desired number of events
 
 	outmain.close();
 	outMultiplicities.close();
