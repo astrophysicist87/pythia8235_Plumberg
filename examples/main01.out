@@ -1,0 +1,1181 @@
+
+ *------------------------------------------------------------------------------------* 
+ |                                                                                    | 
+ |  *------------------------------------------------------------------------------*  | 
+ |  |                                                                              |  | 
+ |  |                                                                              |  | 
+ |  |   PPP   Y   Y  TTTTT  H   H  III    A      Welcome to the Lund Monte Carlo!  |  | 
+ |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.235      |  | 
+ |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 27 Mar 2018  |  | 
+ |  |   P       Y      T    H   H   I   A   A                                      |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 01 Jul 2019 at 17:29:31    |  | 
+ |  |                                                                              |  | 
+ |  |   Christian Bierlich;  Department of Astronomy and Theoretical Physics,      |  | 
+ |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
+ |  |      e-mail: christian.bierlich@thep.lu.se                                   |  | 
+ |  |   Nishita Desai;  Laboratoire Charles Coulomb (L2C),                         |  | 
+ |  |      CNRS-Universite de Montpellier, 34090 Montpellier, France;              |  | 
+ |  |      e-mail: nishita.desai@umontpellier.fr                                   |  | 
+ |  |   Nadine Fischer;  School of Physics,                                        |  | 
+ |  |      Monash University, PO Box 27, 3800 Melbourne, Australia;                |  | 
+ |  |      e-mail: nadine.fischer@monash.edu                                       |  | 
+ |  |   Ilkka Helenius;  Institute for Theoretical Physics,                        |  | 
+ |  |     Tuebingen University, Auf der Morgenstelle 14, 72076 Tuebingen, Germany; |  | 
+ |  |      e-mail: ilkka.helenius@uni-tuebingen.de                                 |  | 
+ |  |   Philip Ilten;  School of Physics and Astronomy,                            |  | 
+ |  |      University of Birmingham, Birmingham, B152 2TT, UK;                     |  | 
+ |  |      e-mail: philten@cern.ch                                                 |  | 
+ |  |   Leif Lonnblad;  Department of Astronomy and Theoretical Physics,           |  | 
+ |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
+ |  |      e-mail: leif.lonnblad@thep.lu.se                                        |  | 
+ |  |   Stephen Mrenna;  Computing Division, Simulations Group,                    |  | 
+ |  |      Fermi National Accelerator Laboratory, MS 234, Batavia, IL 60510, USA;  |  | 
+ |  |      e-mail: mrenna@fnal.gov                                                 |  | 
+ |  |   Stefan Prestel;  Theoretical Physics Department,                           |  | 
+ |  |      Fermi National Accelerator Laboratory, MS 106, Batavia, IL 60510, USA;  |  | 
+ |  |      e-mail: sprestel@fnal.gov                                               |  | 
+ |  |   Christine O. Rasmussen;  Department of Astronomy and Theoretical Physics,  |  | 
+ |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
+ |  |      e-mail: christine.rasmussen@thep.lu.se                                  |  | 
+ |  |   Torbjorn Sjostrand;  Department of Astronomy and Theoretical Physics,      |  | 
+ |  |      Lund University, Solvegatan 14A, SE-223 62 Lund, Sweden;                |  | 
+ |  |      e-mail: torbjorn@thep.lu.se                                             |  | 
+ |  |   Peter Skands;  School of Physics,                                          |  | 
+ |  |      Monash University, PO Box 27, 3800 Melbourne, Australia;                |  | 
+ |  |      e-mail: peter.skands@monash.edu                                         |  | 
+ |  |                                                                              |  | 
+ |  |   The main program reference is 'An Introduction to PYTHIA 8.2',             |  | 
+ |  |   T. Sjostrand et al, Comput. Phys. Commun. 191 (2015) 159                   |  | 
+ |  |   [arXiv:1410.3012 [hep-ph]]                                                 |  | 
+ |  |                                                                              |  | 
+ |  |   The main physics reference is the 'PYTHIA 6.4 Physics and Manual',         |  | 
+ |  |   T. Sjostrand, S. Mrenna and P. Skands, JHEP05 (2006) 026 [hep-ph/0603175]  |  | 
+ |  |                                                                              |  | 
+ |  |   An archive of program versions and documentation is found on the web:      |  | 
+ |  |   http://www.thep.lu.se/Pythia                                               |  | 
+ |  |                                                                              |  | 
+ |  |   This program is released under the GNU General Public Licence version 2.   |  | 
+ |  |   Please respect the MCnet Guidelines for Event Generator Authors and Users. |  | 
+ |  |                                                                              |  | 
+ |  |   Disclaimer: this program comes without any guarantees.                     |  | 
+ |  |   Beware of errors and use common sense when interpreting results.           |  | 
+ |  |                                                                              |  | 
+ |  |   Copyright (C) 2018 Torbjorn Sjostrand                                      |  | 
+ |  |                                                                              |  | 
+ |  |                                                                              |  | 
+ |  *------------------------------------------------------------------------------*  | 
+ |                                                                                    | 
+ *------------------------------------------------------------------------------------* 
+
+
+ *-------  PYTHIA Process Initialization  --------------------------*
+ |                                                                  |
+ | We collide p+ with p+ at a CM energy of 8.000e+03 GeV            |
+ |                                                                  |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | Subprocess                                    Code |   Estimated |
+ |                                                    |    max (mb) |
+ |                                                    |             |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | g g -> g g                                     111 |   1.403e+00 |
+ | g g -> q qbar (uds)                            112 |   1.817e-02 |
+ | q g -> q g                                     113 |   1.010e+00 |
+ | q q(bar)' -> q q(bar)'                         114 |   1.100e-01 |
+ | q qbar -> g g                                  115 |   8.378e-04 |
+ | q qbar -> q' qbar' (uds)                       116 |   3.698e-04 |
+ | g g -> c cbar                                  121 |   5.988e-03 |
+ | q qbar -> c cbar                               122 |   1.225e-04 |
+ | g g -> b bbar                                  123 |   5.400e-03 |
+ | q qbar -> b bbar                               124 |   1.160e-04 |
+ |                                                                  |
+ *-------  End PYTHIA Process Initialization -----------------------*
+
+ *-------  PYTHIA Multiparton Interactions Initialization  ---------* 
+ |                                                                  | 
+ |                   sigmaNonDiffractive =    51.78 mb              | 
+ |                                                                  | 
+ |    pT0 =  2.35 gives sigmaInteraction =   258.64 mb: accepted    | 
+ |                                                                  | 
+ *-------  End PYTHIA Multiparton Interactions Initialization  -----* 
+
+ *-------  PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings (changes only)  ------------------* 
+ |                                                                                                                 | 
+ | Name                                          |                      Now |      Default         Min         Max | 
+ |                                               |                          |                                      | 
+ | Beams:eCM                                     |                 8000.000 |    14000.000    10.00000             | 
+ | HadronLevel:BoseEinstein                      |                       on |          off                         | 
+ | HardQCD:all                                   |                       on |          off                         | 
+ | PhaseSpace:pTHatMin                           |                 20.00000 |          0.0         0.0             | 
+ |                                                                                                                 | 
+ *-------  End PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings  -----------------------------* 
+
+ --------  PYTHIA Particle Data Table (changed only)  ------------------------------------------------------------------------------
+ 
+      id   name            antiName         spn chg col      m0        mWidth      mMin       mMax       tau0    res dec ext vis wid
+             no onMode   bRatio   meMode     products 
+
+ no particle data has been changed from its default value 
+
+ --------  End PYTHIA Particle Data Table  -----------------------------------------------------------------------------------------
+
+CHECK ERROR: 0.0000000000127329   0.0000005462266172   53713.4171264292963315
+BoseEinstein(): pair counts = 0   0   0   0
+ PYTHIA Error in Pythia::check: mismatch in daughter and mother lists  
+ PYTHIA Error in Pythia::next: check of event revealed problems  
+CHECK ERROR: 0.0000000000009095   0.0000004370033297   14920.1803401291363116
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000001561356839   0.0000005183752938   8166.3325286883118679
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000004528770791   62870.9179303349956172
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005594016347   15323.4162571675406070
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000190994   0.0000004819905453   48658.0140135532783461
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002864908   0.0000002899271113   49184.5720357555110240
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005590099710   13864.2499574054400000
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001218723   0.0000004768996767   78024.0574232159997337
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000232848834   0.0000003226165090   2751.8291648983836239
+BoseEinstein(): pair counts = 0   0   0   0
+ PYTHIA Abort from Pythia::next: parton+hadronLevel failed; giving up  
+CHECK ERROR: 0.0000000000009095   0.0000004284294584   4044.4115847073599070
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000004529470037   28319.3960321721060609
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000002274   0.0000001739921469   4129.4762881731494417
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006029950   0.0000006333480569   119376.9663446761696832
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001036824   0.0000005228826446   74811.5411520285852021
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000190994   0.0000006140589711   39997.6627069411770208
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005096507229   14379.2331171639561944
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000005868079500   53986.8236267406246043
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000007339622   0.0000005231792909   61606.1337342132610502
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001282388   0.0000005307265602   47288.4527925711954595
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000004540098111   11179.0912487282348593
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000609361   0.0000006599772942   30462.3779904809089203
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004289149801   6145.9494347144027415
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002410161   0.0000005723373170   122627.8244527667848160
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001273293   0.0000006492781844   156481.3521655704826117
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000272848   0.0000004387787615   28958.3619271600073262
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000077307   0.0000003677131667   20213.8194931376419845
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000391083   0.0000005358672453   43715.4992492629826302
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000022737   0.0000003656635067   18106.4602739707916044
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004194912120   18153.8893381496054644
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005240151604   39115.0606738382848562
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004650349836   13743.9768592772015836
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000006116609824   50936.4411756250119652
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000381988   0.0000004358828369   32166.6735345740744378
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005748341994   13227.3237783837194002
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000006427697433   31092.7873878380378301
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000400178   0.0000004369535826   37264.2316529535746668
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004632514761   14561.7443870152528689
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005772368286   39594.1992937341492507
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000836735   0.0000005862860181   125328.8024710573081393
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005249438022   20919.8185005691557308
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000509317   0.0000005552837244   72357.5427007210673764
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000006633111491   55503.7106186390083167
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000005499965678   35577.0406078585147043
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004295403120   37724.5059969456633553
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005475264208   45967.3425517453943030
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004887843491   3467.8747635754884868
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000057025318   0.0000004689319906   117597.7693672456080094
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005071643574   22183.4878111681500741
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000809450   0.0000005172963981   50662.9731127427294268
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000018344508   0.0000004767655415   60846.8969189602066763
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000005666152   0.0000005759290509   21011.4452204289809742
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000031832   0.0000003848666542   25196.8339184758624469
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002810339   0.0000006578194894   149792.3118129577778745
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000254659   0.0000007018336267   27763.6636930408130866
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006009648848   58285.5354131481217337
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001482476   0.0000006194548807   83835.5234084986150265
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002537490   0.0000005554936275   75337.7374425822054036
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000250111   0.0000003854612145   3722.0623939445481483
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005001056340   5359.4423985935882229
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000006139277107   35694.2753367307595909
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000427463   0.0000006300863981   69850.3928294128563721
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005668102602   14416.3246490896144678
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000236469   0.0000004607219045   25883.7541278514654550
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000005726934154   65878.4539056700887159
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005947960437   10141.9002232734583231
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000003265213555   4638.4275295702673247
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000691216   0.0000005356712462   48901.0089895174751291
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000145519   0.0000006675182481   75685.5907490460522240
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000003521682481   24793.3547180544337607
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000004134017686   58613.7551357267875574
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000900400   0.0000006213495209   73147.5965175396413542
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001427907   0.0000005529001709   67615.3978010139690014
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000013178578   0.0000005945538532   68869.0401746737479698
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000836735   0.0000005660589280   3694.3749437542960550
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004403463826   20082.6163907708614715
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005919639341   8161.9067610448501000
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000700311   0.0000004198213442   43475.5675830592517741
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005909535286   17123.6980927762924694
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000004848528374   47128.2381807569909142
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000136424   0.0000005479647297   48948.3771135517599760
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000005476729941   88506.3753929818631150
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005163849511   9661.3459936269991886
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000004810186627   26467.8427175667457050
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000025411282   0.0000005763186571   6973.2168564733792664
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000336513   0.0000006352891303   53980.9383890487224562
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001573426   0.0000006195150584   81862.5491024944349192
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003274181   0.0000006153068191   41702.6715406944640563
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000477485   0.0000003438988760   63432.1053936757598422
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000006264071057   8774.8724745886411256
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000006989168057   35599.7821490202331915
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004892140230   1722.6184330508488074
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000006017337557   92399.8991471340123098
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000295586   0.0000003561202005   16325.7073913461772463
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000154614   0.0000003909883076   12842.4686727648659144
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005161879832   28087.2313749075110536
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000518412   0.0000006655646165   24264.1115218754639500
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002000888   0.0000006197722517   54315.4320725623983890
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006351903517   16006.7805143000368844
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000172804   0.0000005171067621   26582.3750199145506485
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004455083106   9377.6536313050655735
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001073204   0.0000004463478657   79597.8480272499873536
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001336957   0.0000005906060249   59026.2091212002924294
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000004517323464   11042.6353654740232741
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000003805484724   12424.8921610797660833
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005820326938   29578.4184373127900471
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000006444873944   27581.6988685861688282
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000006132940404   61656.7979926616608282
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000236469   0.0000004688337568   28209.7266329253579897
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000003033654343   2529.9393738614303402
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000004934003126   7960.3835417466962099
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000004598252487   52851.3117812171767582
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001327862   0.0000005874975317   96788.3532272805314278
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001855369   0.0000005778268610   76803.2056328103935812
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000227374   0.0000006417625029   43396.0100132826628396
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000409273   0.0000003795491000   28619.0167948082271323
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000007064578997   5884.3614527444287887
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000691216   0.0000004427367271   10028.1844599544729135
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000427463   0.0000006191111190   11778.3690890563502762
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005361220428   14899.3830161013920588
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000013642   0.0000004019978311   7866.7643316908552151
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000002802976812   41010.0170349721302046
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000006111066190   36343.4323713580233743
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000004913163281   18337.5206973857930279
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000086402   0.0000003960218542   39392.6188108398710028
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000006802361734   39136.7904481074510841
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000300133   0.0000005752256962   51122.6702175341124530
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004038156   0.0000006270969547   30246.5484958833003475
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005576785938   39984.9148777554582921
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000006451498880   27136.7385552537016338
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000007032691192   11268.8923760637790110
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000006413806441   73760.4162231510563288
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000645741   0.0000005234875474   43031.3609680695153656
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000718501   0.0000006076331468   132629.3246483234106563
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000004723923882   74401.4746410899242619
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000171148713   0.0000005580456108   75086.7913329601869918
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000313776   0.0000003714251807   9936.9467531228783628
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005582183618   70105.4199872923054500
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004411318557   10080.7409274221517990
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005678523587   41364.5644157263523084
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000004649673429   0.0000004844045487   6782.9247870761928425
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000004989721633   46074.2568314827585709
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000006672414646   22394.6362558849614288
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005755737537   40426.4840655052830698
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000263753   0.0000006149040713   40559.0447605994631886
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000006200846702   56037.2561008578122710
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000005658703440   126027.3054332255851477
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004600994098   21016.8497804737271508
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000136424   0.0000005908203386   71534.4459888961573597
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000007225238466   42185.3683354534223326
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000004064617418   16654.8083700840688834
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000006821   0.0000001889411077   6289.2442021027609371
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000093932613   0.0000005501013872   86962.8323086055315798
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000563887   0.0000006483709309   72933.4182882792665623
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000008803909   0.0000006894465081   123085.7513512955920305
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004334493801   6915.9887593309122167
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000254659   0.0000005743869733   71986.4264513430243824
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005093898577   15616.9384962918484234
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005770649578   15365.3127228590947198
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000001616626832   0.0000006099027350   3903.7282577489563664
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000005170983323   66432.3634027427033288
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004281513598   92023.9049798604683019
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000006413489635   62495.0952738271516864
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000005675247   0.0000005577237366   172979.1242879306082614
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006212612626   46398.4261420637776610
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004206674408   10175.1615182483164972
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000836735   0.0000006673876000   172959.2390172321174759
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000001649451096   6997.8475741182246566
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000004924682674   35361.3849005868687527
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000004870072085   33833.5030392173284781
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005971770381   41534.6195095901202876
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000491127   0.0000004154160659   98229.4510440100129927
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000145519   0.0000005266801082   42317.4026872706162976
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005701395430   7999.5132490748555938
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000007521521   0.0000005592927203   127121.7240974583546631
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004719201916   5057.2155035118448723
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000627551   0.0000006546504986   49538.0423788403641083
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006220799432   45872.1302387436371646
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005605551247   10016.0129817905071832
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000900400   0.0000005681462346   111333.7690709769667592
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000004456296665   0.0000005507591860   3022.3632091195804605
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000006583636129   25672.3971194336299959
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004974533072   11963.0557842385169351
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000482032   0.0000005998677564   51880.9375229446013691
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000006430628725   26841.7507425914518535
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000763976   0.0000004500169903   49724.4986796617085929
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000007912604   0.0000005587163058   19876.0241275821063027
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004152512968   21737.0498740024340805
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004058091347   21686.7685224941778870
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005418549584   7106.0522493347079944
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004504108042   32359.1105315176137083
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004086964812   38677.7066870161579573
+BoseEinstein(): pair counts = 0   0   0   0
+ PYTHIA Error in StringFragmentation::fragment: stuck in joining  
+ PYTHIA Error in Pythia::next: hadronLevel failed; try again  
+CHECK ERROR: 0.0000002725096238   0.0000003030390460   4072.8985579181980938
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000003056550019   10799.5508191740264010
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000004796936515   17221.4745441052618844
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000005538738895   20500.1561333681347605
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000006913793211   60739.3399656990950461
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000003842728857   4298.8352415253348227
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000845830   0.0000005283687925   86692.4469630975800101
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000012059900   0.0000006286830263   103858.5784653299051570
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000006147617637   38588.1871799655928044
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004596010774   9617.1288437010043708
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005038832229   36737.4514083528920310
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000005913875654   42419.9423107821348822
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000022018867   0.0000006864079018   168016.3584085189213511
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005007913742   37097.6028007344066282
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006739356   0.0000003695484081   138453.7390906213840935
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000006161367849   19180.8953724690909439
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001191438   0.0000005871204769   61088.7444583292162861
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000172804   0.0000006899665321   80424.2364853377657710
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000354703   0.0000005640734228   67070.5048784501850605
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001327862   0.0000004908330982   146989.7275325023219921
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006346391363   12686.1271324459321477
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000245564   0.0000005875174547   47113.1911920485217706
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001391527   0.0000006365533764   86672.2618991059134714
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001155058   0.0000007331844489   114754.4545090845349478
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000059117   0.0000004072770679   52875.7401371288215159
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000536602   0.0000005318580579   51383.2071187909314176
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004392859   0.0000005986882783   55703.5990148283526651
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000005907784375   55044.9607160549203400
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004975777581   32814.5873838233092101
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000005240755861   30021.0517754448046617
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004887820147   42946.5971293724578572
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001127773   0.0000005844574424   84467.3863451771758264
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000005017877556   36211.3860293119359994
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000691216   0.0000006630872001   115387.7068502486799844
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000002299067487   6335.5844632448915945
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000004091580195   0.0000006361910415   2239.1087410366262702
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005744127172   26649.4254538848326774
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005160518669   33185.9488474904137547
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000002769694498   28840.2482495252224908
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000005383990356   0.0000005962132063   16759.0366511772153899
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000004801372860   71813.6151259238831699
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005374423052   47077.0320266656199237
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000006537184572   72369.2702268059656490
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000003696643521   44369.9076640671919449
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005681936742   41424.7461763671672088
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003710738   0.0000005918266623   88201.4456808372342493
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000068212   0.0000003970636251   39755.2658412529344787
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000041045496   0.0000006826673848   30854.8704326284096169
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004113527560   47508.9945457068170072
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000031996024   0.0000006614201387   156689.2378490171104204
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000004700086114   24095.1227888320790953
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005980285924   6100.0987200144736562
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000006019556905   26355.3128592178582039
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000131877   0.0000003995109244   27104.2380174647951208
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001673470   0.0000006264108383   105583.2315277285233606
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000005949241265   27754.9265731415980554
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004365575   0.0000006271556622   106687.0681945991964312
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001518856   0.0000006221043608   79644.3914815388707211
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004114241275   4851.7188565428086804
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000006571564663   19086.4808390081234393
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005760932845   6806.7611513390438631
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000005447400949   30135.1080156402567809
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003001333   0.0000004445187464   15628.3359313146265777
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005534085102   6426.6920944790990688
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002746674   0.0000005687185921   49038.9440140875667566
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000010859367   0.0000006722269692   109776.0070200561603997
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001618901   0.0000006064661131   128473.8890448995807674
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000005219522281   26391.4850229479743575
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000582077   0.0000004384473938   61401.4913766269091866
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000012987584   0.0000005140316900   89051.6641961629356956
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005468145047   56255.6843809939746279
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001546141   0.0000003920836672   53715.3346674606145825
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005400746712   32810.7962320527876727
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006407390   0.0000003191676484   78216.9778758725296939
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005409757742   10113.5305227544195077
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004538379   0.0000005862142884   34228.6575129688353627
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000145519   0.0000005206233407   63281.1710483080314589
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005429272573   22572.1938980545273807
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005668478559   12389.6128824896732112
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000005647962   0.0000005666591371   125064.0455042982503073
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000006460291828   51160.3596190961179673
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001055014   0.0000004039760451   45772.7076762653232436
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004051101595   7283.3396783216039694
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004481923393   28981.4805826755145972
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005396396579   48420.4393216371026938
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000003278477695   25278.5817728036563494
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000006092868560   48071.5756225377044757
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000006474423053   33724.5433223545333021
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000007076546127   58767.6220934581433539
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000172804   0.0000004354075410   5749.3563360206926518
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004408044484   29937.3984893630695296
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000791260   0.0000006037942813   68041.2203976105229231
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000154614   0.0000006719067947   32236.4789954816333193
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000363798   0.0000005523119165   38366.7060097085995949
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000004710171776   41627.2680686168678221
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000006212375516   46684.6803557031016680
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005697337442   2728.4903090775314922
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005134763255   33676.1078889527707361
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000004217650384   39790.2275533751817420
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005361843361   5858.7515017915193312
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002100933   0.0000006779582245   113308.1008408478082856
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000006182204764   55230.4104653177710134
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000190994   0.0000006052708534   93614.9663087244261988
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000463842   0.0000004544807742   44053.4853301153852954
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000001715534381   0.0000004394349325   6459.3258713994700884
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000136424   0.0000007050780358   90343.3740063587902114
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005996692889   14175.1330214662448270
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000031832   0.0000004013014558   40333.9063676072546514
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000006587715279   67745.2967667077318765
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006575647   0.0000005135001240   24422.3353863650954736
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000005476653824   60108.6129050769304740
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000918590   0.0000006836427642   67933.4040984364983160
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000006226085442   26202.0628245025727665
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000089612513   0.0000006324149341   78582.7777154174691532
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000040927   0.0000003848835583   11172.1801863894925191
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005333399411   24466.4017881882828078
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004498337464   4812.8783851909402074
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006757546   0.0000004292489006   108288.5897942926239921
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000012005330   0.0000006565276097   112886.8958946793718496
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004627476699   31884.3134831372335611
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000006361540443   47176.0536429048079299
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001864464   0.0000005176000576   79143.7539568931242684
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004481868339   4552.7717569882834141
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006609501129   25647.9050667744741077
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000002177270612   4599.4708370530606771
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000327418   0.0000005698816253   70374.5245730916503817
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000004548798215   21995.0745935526902031
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001246008   0.0000004840361752   86859.4574472695676377
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005778194213   28137.8620748649045709
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000218279   0.0000005229059794   53847.4174042949161958
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005833202275   35519.7101445990119828
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000002410088200   0.0000004321261941   6156.2184358036593039
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000006322644055   70252.9815089356416138
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000800355   0.0000007177944670   81491.7839008707960602
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002773959   0.0000005568980248   72589.4173183525563218
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000372893   0.0000006793965760   112632.5342437602375867
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006330083   0.0000005356851210   50081.8595854756422341
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000454747   0.0000005503140414   51144.3669836042245151
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004487208338   2219.6517981424231039
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000060526872   0.0000006586569799   100871.2753559729317203
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000536602   0.0000005929363783   17399.0661774241125386
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000002587181439   19785.8663869593947311
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000118734533   0.0000004110129140   268.0577684899686233
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003083187   0.0000004974032096   47235.9611033556648181
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000245564   0.0000006883532908   69695.1960982560412958
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000090612957   0.0000006282707663   136809.0804662890441250
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005323311717   6540.4077803425325328
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000700311   0.0000007033206465   32169.9173060340290249
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000005847575649   35516.3412710115735536
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001564331   0.0000003884550114   31739.5328135831332474
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000005732957910   30796.7145155292128038
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000331966   0.0000002967656833   23061.2096069826548046
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004941180442   8811.2094413496961351
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002537490   0.0000006317619344   179152.2545441536058206
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000040927   0.0000003063881306   22847.2718899684186908
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005921665872   35768.7061591003875947
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000363798   0.0000006598835477   52216.5496880812570453
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000001921389412   0.0000005009411592   1460.6629328244666794
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000003450264954   22206.2017951645138965
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005412607890   7527.0574379607287483
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000145519   0.0000006322785295   35220.5755965228818241
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000272848   0.0000004181925141   31658.6874642859766027
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002364686   0.0000006332727178   110704.9123501937574474
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004656066163   17441.5931755351630272
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000003866002720   19886.1499857067865378
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000291038   0.0000005535993309   18298.1896308263785613
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000909495   0.0000004532401321   18317.4449517486827972
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005731761517   11906.1311252721079654
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000322871   0.0000003851134931   59735.6124802331105457
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000008176357   0.0000007038259251   104432.7097793817520142
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001082299   0.0000005021553101   75359.4678658911143430
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000636646   0.0000005341280406   71782.6272388646320906
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000005784276114   11239.3518028394646535
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005010911698   10334.1859132828121801
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000006482681757   29129.4625650185225822
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000006466507   0.0000005235053467   144454.5755430437275209
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005748952264   52301.3563839963317150
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000021282176   0.0000006312041477   83775.9163749824365368
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005018388645   34656.7171693959680852
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005048248925   5158.2344179379078923
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001123226   0.0000004055103677   22436.8535438471153611
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000527507   0.0000006861633530   70922.3721093404747080
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000058653313   0.0000006278252626   149389.2342011882574297
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001746230   0.0000006365024407   109170.6013728237739997
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005205269331   18072.5839248706870421
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005033383472   15980.7314576848384604
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005339929886   9267.6239453379694169
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000003934446795   0.0000005064766727   3339.6064264742913110
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005271716543   27434.1907913377617660
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004995996267   50110.1545634927751962
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000318323   0.0000005213653562   61565.1833936025359435
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000004590988008   26804.5240272768896830
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000391083   0.0000005207360520   67714.8402034506580094
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001400622   0.0000006001960705   91878.9988869710068684
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001264198   0.0000005556234962   74955.5544670678355033
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000063665   0.0000004948729778   28524.3373410164276720
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000005121932712   57848.5488169786040089
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000336513   0.0000005855285642   46565.3087887212168425
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005761359807   29424.2721355071371363
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000154614   0.0000006488008925   59331.0628964186107623
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000022737   0.0000003388335896   17259.0027055704740633
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000001824146239   0.0000005622975863   3600.3612911846657880
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005714932889   17210.0383446282576188
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000004305547918   0.0000004504189790   17053.7085118898648943
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000936780   0.0000003255178221   28684.2572596398676978
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000006500348016   57473.9288220088201342
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000007263590666   29100.6346810824325075
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000005863251975   26208.6393757810474199
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000006310674487   35754.6530605879670475
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001437002   0.0000004911693955   72115.6197853990452131
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000236469   0.0000003879007561   39972.6345041993263294
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000172804   0.0000004556745072   53115.0313429407688091
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000002096603412   10824.0069743729272886
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000004627518538   39197.8603591230930761
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000509317   0.0000006285347415   23264.5683016678522108
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006384017310   49829.1746901243823231
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000482032   0.0000005730859368   34636.5943027870889637
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000007858034   0.0000006069595387   87551.2005278408614686
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000003688704186   44164.9783961177308811
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005662456326   41313.7902628536612610
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005420496293   9236.9374469633276021
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000011041266   0.0000005922107017   98824.8098456252191681
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000154614   0.0000005623474639   35640.8970336931379279
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004295551920   55645.1298376695485786
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000005958185444   59886.4423749434281490
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001682565   0.0000005882617841   84373.5552121736691333
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004118910594   22935.5272237416611461
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000056197678   0.0000004680925605   186101.7762996324163396
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000090949   0.0000005600148569   16769.6462174782682268
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001755325   0.0000005379186608   46669.0259928329105605
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000014924808   0.0000006431867910   139677.0083008935034741
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000005624595946   13887.9256455454906245
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005207999710   39700.5381591679397388
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004456701229   23515.6214568988216342
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005812720952   22810.7798617095031659
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000482032   0.0000005899980328   3394.7686266940149835
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000003434770026   5605.5668865913239642
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005186057305   9017.4447071587055689
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004797344216   48397.3500450166466180
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000002321467036   0.0000004898050978   3990.9285549390961023
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005878210611   51640.8927171606846969
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000005723749130   8364.3867290959915408
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005003982872   13040.2123148434657196
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000005806542777   64167.1202714163664496
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000186446   0.0000003433380331   5138.2289234160125488
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000002163580760   14214.1797634423946874
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002100933   0.0000006989465672   162866.9449787008925341
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004802132   0.0000006827027122   127188.2231974811875261
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000004712990976   30000.4211653248785296
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000100044   0.0000007065405413   9858.9791661671551992
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000004413135244   3344.0464352114413487
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005578091480   38122.4234463827669970
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000627551   0.0000003506427886   18642.8554606803882052
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000005930777884   30019.1407123781900737
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000004683898   0.0000006833278142   126802.0700419175700517
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000005354068656   27139.0232239337565261
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005825365860   6880.7755606772489045
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000081855   0.0000006051395397   73578.6483075060386909
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000181899   0.0000006364968536   50826.1364636134385364
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000891305   0.0000005784201273   83961.0407846904854523
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000003613497646   4152.0025832427954811
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000006175436756   49861.2901806905138073
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000582077   0.0000006269309236   125560.1394086666841758
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005442768336   25658.1597462057034136
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003710738   0.0000005816904219   109980.1135512431792449
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000004347188900   45799.4665334950768738
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000009095   0.0000005526431182   15794.1194395190141222
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000127329   0.0000005389096004   71001.8732321904099081
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005859694545   52595.4771859647662495
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000004995174890   50943.2236740728330915
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000829004421   0.0000004441606445   5584.4150265289472372
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000050022   0.0000003934901797   16015.1630021962173487
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000006600730246   34761.3685991482125246
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000154614   0.0000005896234652   58406.2079730696859770
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000002424731232   37648.6312591448077001
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001141416   0.0000002958319013   48646.6693496927327942
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000008303687   0.0000005858768404   140374.4386389880673960
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000873115   0.0000005667339824   51994.6045883346523624
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005086597950   42776.1376541106437799
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004607997914   52723.6479447746751248
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000016661943   0.0000006447178096   25895.0403087253944250
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000006335408741   8849.1803437235157617
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000002414180566   10341.0256877073134092
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000097152224   0.0000005235673983   78711.3820553096011281
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000004972837282   49479.9156994516742998
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002146407   0.0000005966561439   64073.8231957742827944
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000509317   0.0000006394629892   66491.3945594757969957
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000190994   0.0000007033187852   25289.6218581600223843
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000472937   0.0000006327853133   47340.6826621891741524
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002246452   0.0000005423277389   55607.8967324249606463
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000259206   0.0000003396627992   26309.8931796900251356
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000509317   0.0000005041033356   47862.5376840396129410
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000432010   0.0000003823050086   11836.1639032831080840
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000109157554   0.0000006118232106   64133.9394724945595954
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000627551   0.0000005640234129   34273.1513981184834847
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005652839646   18919.4971101550036110
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000190994   0.0000006640840017   27808.3133782343684288
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000181899   0.0000006659540726   72466.0214677719632164
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000018190   0.0000006123358480   28274.1958485550130717
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000003592504   0.0000005106622838   121146.7971828956651734
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000004547   0.0000003351913950   26908.1535747699999774
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000181899   0.0000005349470686   61359.8726349431744893
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002028173   0.0000005236046267   95573.3002045720932074
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000072760   0.0000006125605429   35286.2994593656330835
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000004806621911   27128.3013439673450193
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005706236449   17081.3877545817667851
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005032483282   26832.0853969896525086
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000109139   0.0000004960682644   57813.3550154578260845
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005934388605   48446.7645131646931986
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005173093466   42777.8691477229876909
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005730898754   47404.6666293024827610
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000005329639   0.0000004837213759   104623.2770068411336979
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001455192   0.0000005873794373   87345.0043487618822837
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000004988824366   30653.7292414601288328
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000200089   0.0000004932243264   97457.8367621625657193
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000002499850945   23349.5699010323332914
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000045475   0.0000005529380744   26684.9142289012488618
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000436557   0.0000006497236482   68736.3429044517542934
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001991793   0.0000006592006771   129116.9863220128754620
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000003221421796   4277.7502460673713358
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000136424   0.0000006123826147   62066.9667847793607507
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002701199   0.0000006691216224   104487.6468102931248723
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000036380   0.0000005549696730   29975.8914191831172502
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000004678320037   81690.6920390821906039
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000000000   0.0000005584433407   7113.8963937506605362
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000245564   0.0000005279929853   115162.6352571702300338
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000482032   0.0000005758095432   78917.1394713694171514
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000027285   0.0000005468513832   14219.5476711253668327
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000001200533   0.0000005317443678   18062.0164027821665513
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005393887410   47754.3192736406708718
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000727596   0.0000006237543939   50893.0888941949306172
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000002110028   0.0000005597744779   187844.0358915047836490
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000236469   0.0000005896560494   66503.1252960485726362
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000000054570   0.0000005051737721   48702.0924865863853483
+BoseEinstein(): pair counts = 0   0   0   0
+CHECK ERROR: 0.0000000056961653   0.0000004238868588   90108.1428274811187293
+BoseEinstein(): pair counts = 0   0   0   0
